@@ -16,5 +16,4 @@ public class PlsDbContext : DbContext
 
     public virtual DbSet<Material> Materials { get; set; }
 
-
 }

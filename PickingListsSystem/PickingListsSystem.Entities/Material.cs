@@ -3,7 +3,11 @@
 
     public class Material
     {
-        public int MaterialId { get; set; }
+        public int Id { get; set; }
+
+        public int MaterialMark { get; set; }
+
+        public string MaterialName { get; set; }
 
         public string MaterialUnit { get; set; }
 
