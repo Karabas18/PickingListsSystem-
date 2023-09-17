@@ -11,10 +11,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
-var connectionStringIdentity = builder.Configuration.GetConnectionString("Identity");
 
 builder.Services.AddDbContext<PlsDbContext>(options =>
             options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<PlsDbContextInitializer>();
 
 await builder.Build().RunAsync();
