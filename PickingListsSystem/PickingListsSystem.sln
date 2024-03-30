@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.DataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Entities", "PickingListsSystem.Entities\PickingListsSystem.Entities.csproj", "{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Web", "PickingListsSystem.Web\PickingListsSystem.Web.csproj", "{55069783-7E4E-4CA6-A79F-90A3308C0432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.API", "PickingListsSystem.Web\PickingListsSystem.API.csproj", "{55069783-7E4E-4CA6-A79F-90A3308C0432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Services", "PickingListsSystem.Services\PickingListsSystem.Services.csproj", "{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Services", "PickingListsSystem.Services\PickingListsSystem.Services.csproj", "{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Services.Contracts", "PickingListsSystem.Services.Contracts\PickingListsSystem.Services.Contracts.csproj", "{A5B8D6DC-5547-48AC-864C-5901A60EB81D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Services.Contracts", "PickingListsSystem.Services.Contracts\PickingListsSystem.Services.Contracts.csproj", "{A5B8D6DC-5547-48AC-864C-5901A60EB81D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Dto", "PickingListsSystem.Dto\PickingListsSystem.Dto.csproj", "{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Dto", "PickingListsSystem.Dto\PickingListsSystem.Dto.csproj", "{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
