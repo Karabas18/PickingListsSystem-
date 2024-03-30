@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem", "PickingListsSystem\PickingListsSystem.csproj", "{1AC05CEC-9AD4-4A29-8999-EFE1E49CFD1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.DataAccess", "PickingListsSystem.DataAccess\PickingListsSystem.DataAccess.csproj", "{07687F00-BC4F-4ED6-AF6F-883C37529761}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.DataAccess", "PickingListsSystem.DataAccess\PickingListsSystem.DataAccess.csproj", "{07687F00-BC4F-4ED6-AF6F-883C37529761}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.DataAccess.Contracts", "PickingListsSystem.DataAccess.Contracts\PickingListsSystem.DataAccess.Contracts.csproj", "{E42BF60F-6BC1-4EAA-849D-58510456FDDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.DataAccess.Contracts", "PickingListsSystem.DataAccess.Contracts\PickingListsSystem.DataAccess.Contracts.csproj", "{E42BF60F-6BC1-4EAA-849D-58510456FDDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Entities", "PickingListsSystem.Entities\PickingListsSystem.Entities.csproj", "{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Entities", "PickingListsSystem.Entities\PickingListsSystem.Entities.csproj", "{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Web", "PickingListsSystem.Web\PickingListsSystem.Web.csproj", "{55069783-7E4E-4CA6-A79F-90A3308C0432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Services", "PickingListsSystem.Services\PickingListsSystem.Services.csproj", "{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Services.Contracts", "PickingListsSystem.Services.Contracts\PickingListsSystem.Services.Contracts.csproj", "{A5B8D6DC-5547-48AC-864C-5901A60EB81D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Dto", "PickingListsSystem.Dto\PickingListsSystem.Dto.csproj", "{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1AC05CEC-9AD4-4A29-8999-EFE1E49CFD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AC05CEC-9AD4-4A29-8999-EFE1E49CFD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AC05CEC-9AD4-4A29-8999-EFE1E49CFD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AC05CEC-9AD4-4A29-8999-EFE1E49CFD1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07687F00-BC4F-4ED6-AF6F-883C37529761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07687F00-BC4F-4ED6-AF6F-883C37529761}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07687F00-BC4F-4ED6-AF6F-883C37529761}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +35,22 @@ Global
 		{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41DCD8E1-5217-428E-99CE-316EBEE1FCCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55069783-7E4E-4CA6-A79F-90A3308C0432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55069783-7E4E-4CA6-A79F-90A3308C0432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55069783-7E4E-4CA6-A79F-90A3308C0432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55069783-7E4E-4CA6-A79F-90A3308C0432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFAC1ECC-5A30-40FE-8F65-6A5A6ADCA3DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B8D6DC-5547-48AC-864C-5901A60EB81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B8D6DC-5547-48AC-864C-5901A60EB81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B8D6DC-5547-48AC-864C-5901A60EB81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B8D6DC-5547-48AC-864C-5901A60EB81D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

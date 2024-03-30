@@ -1,10 +1,7 @@
-﻿namespace PickingListsSystem.Entities
+﻿namespace PickingListsSystem.Dto.Materials
 {
-
-    public class Material
+    public class CreateMaterialDto
     {
-        public int Id { get; set; }
-
         public int? MaterialMark { get; set; }
 
         public string? MaterialName { get; set; }

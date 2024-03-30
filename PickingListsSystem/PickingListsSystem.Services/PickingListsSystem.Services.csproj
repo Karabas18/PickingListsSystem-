@@ -1,14 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PickingListsSystem.Entities\PickingListsSystem.Entities.csproj" />
+    <ProjectReference Include="..\PickingListsSystem.Services.Contracts\PickingListsSystem.Services.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
