@@ -5,7 +5,7 @@ using PickingListsSystem.Entities;
 
 namespace PickingListsSystem.DataAccess.Repositories
 {
-    internal class MaterialRepository : BaseRepository, IMaterialRepository
+    public class MaterialRepository : BaseRepository, IMaterialRepository
     {
         public MaterialRepository(PlsDbContext dbContext) : base(dbContext)
         {
