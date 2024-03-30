@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PickingListsSystem.DataAccess.Contracts;
+using PickingListsSystem.Dto.Materials;
 using PickingListsSystem.Entities;
+using PickingListsSystem.Services.Contracts;
 
 namespace PickingListsSystem.Web.Controllers
 {
@@ -9,38 +11,38 @@ namespace PickingListsSystem.Web.Controllers
     [Route("[controller]")]
     public class MaterialController : ControllerBase
     {
-        private readonly IMaterialRepository _materialRepository;
+        private readonly IMaterialService _materialService;
 
         private readonly ILogger<MaterialController> _logger;
 
-        public MaterialController(IMaterialRepository materialRepository, ILogger<MaterialController> logger)
+        public MaterialController(IMaterialService materialService, ILogger<MaterialController> logger)
         {
-            _materialRepository = materialRepository;
+            _materialService = materialService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<List<Material>> GetAll()
+        public async Task<List<MaterialDto>> GetAll()
         {
-            return await _materialRepository.GetMaterials();
+            return await _materialService.GetMaterials();
         }
 
         [HttpPost]
-        public async Task<Material> Create([FromBody]Material material)
+        public async Task<int> Create([FromBody]CreateMaterialDto material)
         {
-            return await _materialRepository.AddMaterial(material);
+            return await _materialService.AddMaterial(material);
         }
 
         [HttpPut]
-        public async Task<Material> Update([FromBody] Material material)
+        public async Task<int> Update([FromBody] MaterialDto material)
         {
-            return await _materialRepository.UpdateMaterial(material);
+            return await _materialService.UpdateMaterial(material);
         }
 
         [HttpDelete]
         public async Task Delete(int id)
         {
-           await _materialRepository.DeleteMaterial(id);
+           await _materialService.DeleteMaterial(id);
         }
 
     }

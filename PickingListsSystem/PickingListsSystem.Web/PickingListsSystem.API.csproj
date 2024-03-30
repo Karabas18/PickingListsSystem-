@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PickingListsSystem.DataAccess\PickingListsSystem.DataAccess.csproj" />
+    <ProjectReference Include="..\PickingListsSystem.Dto\PickingListsSystem.Dto.csproj" />
+    <ProjectReference Include="..\PickingListsSystem.Services.Contracts\PickingListsSystem.Services.Contracts.csproj" />
+    <ProjectReference Include="..\PickingListsSystem.Services\PickingListsSystem.Services.csproj" />
+  </ItemGroup>
+
+</Project>

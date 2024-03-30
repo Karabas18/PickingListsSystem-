@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using PickingListsSystem.API.Profiles;
 using PickingListsSystem.DataAccess;
 using PickingListsSystem.DataAccess.Contracts;
 using PickingListsSystem.DataAccess.Repositories;
+using PickingListsSystem.Services;
+using PickingListsSystem.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,9 @@ builder.Services.AddDbContext<PlsDbContext>(options =>
             options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>(); //scoped singelton transient
+builder.Services.AddScoped<IMaterialService, MaterialService>();
+
+builder.Services.AddAutoMapper(typeof(MaterialProfile));
 
 var app = builder.Build();
 
