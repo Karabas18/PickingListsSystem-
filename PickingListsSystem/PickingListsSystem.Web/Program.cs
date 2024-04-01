@@ -29,7 +29,12 @@ builder.Services.AddDbContext<PlsDbContext>(options =>
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>(); //scoped singelton transient
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 
+builder.Services.AddScoped<IWorkRepository, WorkRepository>(); //work
+builder.Services.AddScoped<IWorkService, WorkService>();
+
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
+
+builder.Services.AddAutoMapper(typeof(WorkProfile)); //work
 
 var app = builder.Build();
 

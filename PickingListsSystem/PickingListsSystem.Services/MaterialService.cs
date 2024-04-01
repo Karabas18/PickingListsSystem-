@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PickingListsSystem.DataAccess.Contracts;
 using PickingListsSystem.Dto.Materials;
+using PickingListsSystem.Entities;
 using PickingListsSystem.Services.Contracts;
 
 namespace PickingListsSystem.Services
@@ -16,30 +17,36 @@ namespace PickingListsSystem.Services
             _materialRepository = materialRepository;
         }
 
-        public Task<int> AddMaterial(CreateMaterialDto material)
+        public async Task<int> AddMaterial(CreateMaterialDto material)
         {
-            throw new NotImplementedException();
+            var entitytoAdd = _mapper.Map<CreateMaterialDto, Material>(material);
+            await _materialRepository.AddMaterial(entitytoAdd);
+            return entitytoAdd.Id;
         }
 
-        public Task DeleteMaterial(int id)
+        public async Task DeleteMaterial(int id)
         {
-            throw new NotImplementedException();
+           await _materialRepository.DeleteMaterial(id);
         }
 
-        public Task<MaterialDto> GetMaterialID(int id)
+        public async Task<MaterialDto> GetMaterialID(int id)
         {
-            throw new NotImplementedException();
+            //return _mapper.Map<MaterialDto>(await _materialRepository.GetMaterialID(id));
+            var material = await _materialRepository.GetMaterialID(id);
+            return _mapper.Map<MaterialDto>(material);
         }
 
         public async Task<List<MaterialDto>> GetMaterials() 
         {
-            var  materials = await _materialRepository.GetMaterials();
+            var materials = await _materialRepository.GetMaterials();
             return _mapper.Map<List<MaterialDto>>(materials);
         }
 
-        public Task<int> UpdateMaterial(MaterialDto material)
+        public async Task<int> UpdateMaterial(MaterialDto material)
         {
-            throw new NotImplementedException();
+            var entitytoUpdate = _mapper.Map<CreateMaterialDto, Material>(material);
+            await _materialRepository.UpdateMaterial(entitytoUpdate);
+            return entitytoUpdate.Id;
         }
     }
 }
