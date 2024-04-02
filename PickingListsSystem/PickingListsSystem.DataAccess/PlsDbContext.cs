@@ -19,4 +19,6 @@ public class PlsDbContext : DbContext
 
     public virtual DbSet<WorkType> WorkType { get; set; }
 
+    public virtual DbSet<Role> Role { get; set; }
+
 }
