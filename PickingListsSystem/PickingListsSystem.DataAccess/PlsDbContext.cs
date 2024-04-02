@@ -15,4 +15,6 @@ public class PlsDbContext : DbContext
 
     public virtual DbSet<Work> Work { get; set; }
 
+    public virtual DbSet<Customer> Customer { get; set; }
+
 }

@@ -32,9 +32,14 @@ builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IWorkRepository, WorkRepository>(); //work
 builder.Services.AddScoped<IWorkService, WorkService>();
 
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>(); //customer
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
 
 builder.Services.AddAutoMapper(typeof(WorkProfile)); //work
+
+builder.Services.AddAutoMapper(typeof(CustomerProfile)); //customer
 
 var app = builder.Build();
 
