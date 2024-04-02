@@ -10,7 +10,8 @@
 
         public string? WorkUnitMeasurement { get; set; }
 
-        public int? WorkType { get; set; }
+        public int? WorkTypeId { get; set; }
+        public WorkType WorkType { get; set; }
 
     }
 }
