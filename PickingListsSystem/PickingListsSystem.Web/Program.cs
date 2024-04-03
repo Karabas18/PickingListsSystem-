@@ -41,6 +41,9 @@ builder.Services.AddScoped<IWorkTypeService, WorkTypeService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>(); //role
 builder.Services.AddScoped<IRoleService, RoleService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>(); //user
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
 
 builder.Services.AddAutoMapper(typeof(WorkProfile)); //work
@@ -49,7 +52,9 @@ builder.Services.AddAutoMapper(typeof(CustomerProfile)); //customer
 
 builder.Services.AddAutoMapper(typeof(WorkTypeProfile)); //workType
 
-builder.Services.AddAutoMapper(typeof(RoleProfile)); //workType
+builder.Services.AddAutoMapper(typeof(RoleProfile)); //role
+
+builder.Services.AddAutoMapper(typeof(UserProfile)); //user
 
 var app = builder.Build();
 

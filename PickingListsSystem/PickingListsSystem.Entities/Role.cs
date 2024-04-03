@@ -7,5 +7,7 @@
         public string? RoleName { get; set; }
 
         public int? RolePriority { get; set; }
+
+        public User User { get; set; }
     }
 }

@@ -21,4 +21,6 @@ public class PlsDbContext : DbContext
 
     public virtual DbSet<Role> Role { get; set; }
 
+    public virtual DbSet<User> User { get; set; }
+
 }
