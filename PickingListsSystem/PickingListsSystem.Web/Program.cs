@@ -44,6 +44,15 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>(); //user
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IWorkGroupRepository, WorkGroupRepository>(); //workGroup
+builder.Services.AddScoped<IWorkGroupService, WorkGroupService>();
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>(); //project
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IStatementRepository, StatementRepository>(); //statement
+builder.Services.AddScoped<IStatementService, StatementService>();
+
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
 
 builder.Services.AddAutoMapper(typeof(WorkProfile)); //work
@@ -55,6 +64,12 @@ builder.Services.AddAutoMapper(typeof(WorkTypeProfile)); //workType
 builder.Services.AddAutoMapper(typeof(RoleProfile)); //role
 
 builder.Services.AddAutoMapper(typeof(UserProfile)); //user
+
+builder.Services.AddAutoMapper(typeof(WorkGroupProfile)); //workGroup
+
+builder.Services.AddAutoMapper(typeof(ProjectProfile)); //project
+
+builder.Services.AddAutoMapper(typeof(StatementProfile)); //statement
 
 var app = builder.Build();
 

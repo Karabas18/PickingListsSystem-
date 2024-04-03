@@ -10,11 +10,9 @@
 
         public DateTime? UserDate { get; set; }
 
-        public ICollection<Role> Roles { get; set; }
+        public Role Role { get; set; }
 
-        //public ICollection<Data> Data { get; set; }
-
-        //public Role Role { get; set; }
+        public WorkGroup WorkGroup { get; set; }
 
         //public Data Data { get; set; }
 

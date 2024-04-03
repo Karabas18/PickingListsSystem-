@@ -12,5 +12,7 @@
 
         public string? CustomerEmail { get; set; }
 
+        public ICollection<Project> Project { get; set; }
+
     }
 }

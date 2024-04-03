@@ -10,5 +10,7 @@
 
         public ICollection<Work> Works { get; set; }
 
+        public ICollection<Project> Project { get; set; }
+
     }
 }

@@ -23,4 +23,10 @@ public class PlsDbContext : DbContext
 
     public virtual DbSet<User> User { get; set; }
 
+    public virtual DbSet<WorkGroup> WorkGroup { get; set; }
+
+    public virtual DbSet<Project> Project { get; set; }
+
+    public virtual DbSet<Statement> Statement { get; set; }
+
 }
