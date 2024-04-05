@@ -9,6 +9,7 @@ namespace PickingListsSystem.API.Profiles
         public MaterialProfile()
         {
             CreateMap<Material, MaterialDto>().ReverseMap();
+            CreateMap<CreateMaterialDto, Material>().ReverseMap();
         }
     }
 }

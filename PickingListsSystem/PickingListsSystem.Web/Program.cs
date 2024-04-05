@@ -29,7 +29,47 @@ builder.Services.AddDbContext<PlsDbContext>(options =>
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>(); //scoped singelton transient
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 
+builder.Services.AddScoped<IWorkRepository, WorkRepository>(); //work
+builder.Services.AddScoped<IWorkService, WorkService>();
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>(); //customer
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+builder.Services.AddScoped<IWorkTypeRepository, WorkTypeRepository>(); //workType
+builder.Services.AddScoped<IWorkTypeService, WorkTypeService>();
+
+builder.Services.AddScoped<IRoleRepository, RoleRepository>(); //role
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>(); //user
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IWorkGroupRepository, WorkGroupRepository>(); //workGroup
+builder.Services.AddScoped<IWorkGroupService, WorkGroupService>();
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>(); //project
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IStatementRepository, StatementRepository>(); //statement
+builder.Services.AddScoped<IStatementService, StatementService>();
+
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
+
+builder.Services.AddAutoMapper(typeof(WorkProfile)); //work
+
+builder.Services.AddAutoMapper(typeof(CustomerProfile)); //customer
+
+builder.Services.AddAutoMapper(typeof(WorkTypeProfile)); //workType
+
+builder.Services.AddAutoMapper(typeof(RoleProfile)); //role
+
+builder.Services.AddAutoMapper(typeof(UserProfile)); //user
+
+builder.Services.AddAutoMapper(typeof(WorkGroupProfile)); //workGroup
+
+builder.Services.AddAutoMapper(typeof(ProjectProfile)); //project
+
+builder.Services.AddAutoMapper(typeof(StatementProfile)); //statement
 
 var app = builder.Build();
 

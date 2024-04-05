@@ -27,6 +27,12 @@ namespace PickingListsSystem.Web.Controllers
             return await _materialService.GetMaterials();
         }
 
+        [HttpGet("getbyid")]
+        public async Task<MaterialDto> GetID(int id)
+        {
+            return await _materialService.GetMaterialID(id);
+        }
+
         [HttpPost]
         public async Task<int> Create([FromBody]CreateMaterialDto material)
         {

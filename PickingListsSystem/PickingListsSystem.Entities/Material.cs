@@ -1,6 +1,5 @@
 ﻿namespace PickingListsSystem.Entities
 {
-
     public class Material
     {
         public int Id { get; set; }
@@ -24,5 +23,7 @@
         public int? MaterialWeight { get; set; }
 
         public int? MaterialType { get; set; }
+
+        public ICollection<Work> Work { get; set; }
     }
 }
