@@ -13,5 +13,7 @@
         public int? WorkTypeId { get; set; }
         public WorkType WorkType { get; set; }
 
+        public ICollection<Material> Material { get; set; }
+
     }
 }

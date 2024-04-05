@@ -13,5 +13,9 @@
         public WorkType WorkType { get; set; }
 
         public Customer Customer { get; set; }
+
+        public ICollection<WorkGroup> WorkGroup { get; set; }
+
+        public ICollection<Statement> Statement { get; set; }
     }
 }

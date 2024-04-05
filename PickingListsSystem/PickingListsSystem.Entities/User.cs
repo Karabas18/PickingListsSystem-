@@ -4,17 +4,17 @@
     {
         public int Id { get; set; }
 
-        public string? UserFullname { get; set; }
+        public string? Fullname { get; set; }
 
-        public string? UserEmail { get; set; }
+        public string? Email { get; set; }
 
-        public DateTime? UserDate { get; set; }
+        public DateTime? Date { get; set; }
 
         public Role Role { get; set; }
 
-        public WorkGroup WorkGroup { get; set; }
+        //public WorkGroup WorkGroup { get; set; }
 
-        //public Data Data { get; set; }
+        //public UserData UserData { get; set; }
 
     }
 }

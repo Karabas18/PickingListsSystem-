@@ -2,11 +2,11 @@
 {
     public class CreateUserDto
     {
-        public string? UserFullname { get; set; }
+        public string? Fullname { get; set; }
 
-        public string? UserEmail { get; set; }
+        public string? Email { get; set; }
 
-        public DateTime? UserDate { get; set; }
+        public DateTime? Date { get; set; }
 
     }
 }

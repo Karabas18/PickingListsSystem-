@@ -7,5 +7,7 @@
         public string? StatementStatus { get; set; }
 
         public DateTime? StatementDate { get; set; }
+
+        public ICollection<Project> Project { get; set; }
     }
 }
