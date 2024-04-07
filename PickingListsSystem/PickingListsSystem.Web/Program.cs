@@ -80,6 +80,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
 app.Services.MigratePls();
 
 app.UseHttpsRedirection();

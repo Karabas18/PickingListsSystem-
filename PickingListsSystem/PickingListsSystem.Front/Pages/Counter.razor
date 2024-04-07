@@ -1,0 +1,31 @@
+﻿@page "/Counter"
+@using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Services.Contracts;
+@inject IMaterialService _materialService;
+<PageTitle>Index</PageTitle>
+
+<MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Unit</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.MaterialName</MudTd>
+        <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
+        <MudTd DataLabel="Actions"><MudButton OnClick="OnEvaluateCLick" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton></MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<MaterialDto>? materials;
+
+    protected async override Task OnInitializedAsync()
+    {
+        materials = await _materialService.GetMaterials();
+    }
+
+    private void OnEvaluateCLick()
+    {
+
+    }
+}
