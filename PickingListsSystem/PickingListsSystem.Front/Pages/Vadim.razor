@@ -1,4 +1,4 @@
-﻿@page "/Counter"
+﻿@page "/Vadim"
 @using PickingListsSystem.Dto.Materials
 @using PickingListsSystem.Services.Contracts;
 @inject IMaterialService _materialService;
@@ -6,28 +6,12 @@
 
 <MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
     <HeaderContent>
-        <MudTh>NameZ</MudTh>
-        <MudTh>Unit</MudTh>
         <MudTh>Mark</MudTh>
         <MudTh>Gost</MudTh>
-        <MudTh>RB</MudTh>
-        <MudTh>RL</MudTh>
-        <MudTh>RH</MudTh>
-        <MudTh>V</MudTh>
-        <MudTh>Weight</MudTh>
-        <MudTh>Type</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">@context.MaterialName</MudTd>
-        <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
         <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
         <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
-        <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
-        <MudTd DataLabel="Rl">@context.MaterialRL</MudTd>
-        <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
-        <MudTd DataLabel="V">@context.MaterialV</MudTd>
-        <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
-        <MudTd DataLabel="Type">@context.MaterialType</MudTd>
         <MudTd DataLabel="Actions"><MudButton OnClick="OnEvaluateCLick" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton></MudTd>
     </RowTemplate>
 </MudTable>
