@@ -1,0 +1,39 @@
+﻿@page "/SelectedMaterialsPage"
+@using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Services
+@using PickingListsSystem.Services.Contracts;
+@inject IMaterialService _selectedMaterialsService
+@inject MarkMaterialService _selectedMaterialsService;
+
+<PageTitle>Selected Materials</PageTitle>
+
+<h3>Время говнокода!!!</h3>
+<h3>@selectedMaterial.Count</h3>
+<h3>@MarkMaterialService.GetSelectedMaterial().Count()</h3>
+@foreach (var item in selectedMaterial)
+{
+    <h1>@item.MaterialMark</h1>
+}
+@code {
+    private List<MaterialDto> selectedMaterial;
+    private int selectedMaterialId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Здесь вы будете получать выбранный материал по его ID
+        selectedMaterial = MarkMaterialService.GetSelectedMaterial().ToList();
+
+        // Очищаем список перед загрузкой новых материалов
+        //selectedMaterial = new List<MaterialDto>();
+        // Загружаем новые материалы
+        //selectedMaterial.AddRange(MarkMaterialService.GetSelectedMaterial());
+
+    }
+
+    // Метод для установки выбранного материала по его ID
+    private void SetSelectedMaterialId(int id)
+    {
+        selectedMaterialId = id;
+        StateHasChanged(); // Обновляем компонент, чтобы вызвать метод OnInitializedAsync снова
+    }
+}

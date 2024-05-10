@@ -1,7 +1,11 @@
 ﻿@page "/Vadim"
 @using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts;
+@using PickingListsSystem.Front.Services
 @inject IMaterialService _materialService;
+@inject MarkMaterialService _selectedMaterialsService;
+
 <PageTitle>Index</PageTitle>
 
 <MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
@@ -12,7 +16,9 @@
     <RowTemplate>
         <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
         <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
-        <MudTd DataLabel="Actions"><MudButton OnClick="OnEvaluateCLick" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton></MudTd>
+        <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OnEvaluateClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
+        </MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -24,8 +30,9 @@
         materials = await _materialService.GetMaterials();
     }
 
-    private void OnEvaluateCLick()
+    private async Task OnEvaluateClick(int id)
     {
-
+        var selectedMaterial = await _materialService.GetMaterialID(id);
+        await MarkMaterialService.AddSelectedMaterial(selectedMaterial);
     }
 }

@@ -29,9 +29,18 @@ namespace PickingListsSystem.Front.Services
             return response ?? throw new HttpRequestException("Couldn't get vessels");
         }
 
-        public Task<MaterialDto> GetMaterialID(int id)
+        public async Task<MaterialDto> GetMaterialID(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync($"Material/getbyid?id={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var materialDto = await response.Content.ReadFromJsonAsync<MaterialDto>();
+                return materialDto ?? throw new HttpRequestException($"Couldn't get material with ID {id}");
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to get material with ID {id}. Status code: {response.StatusCode}");
+            }
         }
 
         public Task<int> UpdateMaterial(MaterialDto material)
