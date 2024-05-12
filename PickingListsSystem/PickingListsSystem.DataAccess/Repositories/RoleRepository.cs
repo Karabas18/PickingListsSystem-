@@ -19,8 +19,7 @@ namespace PickingListsSystem.DataAccess.Repositories
 
         public async Task<Role> GetRoleID(int id)
         {
-            var result = await _dbContext.Role.FirstOrDefaultAsync(role => role.Id == id);
-            return result;
+           throw new NotImplementedException();
         }
 
         public async Task DeleteRole(int id)

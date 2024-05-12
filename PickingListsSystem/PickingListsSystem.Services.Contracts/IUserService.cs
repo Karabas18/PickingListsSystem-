@@ -7,7 +7,7 @@ namespace PickingListsSystem.Services.Contracts
         Task<List<UserDto>> GetUser();
         Task<UserDto> GetUserID(int id);
         Task DeleteUser(int id);
-        Task<int> AddUser(CreateUserDto user);
-        Task<int> UpdateUser(UserDto user);
+        Task<string> AddUser(CreateUserDto user);
+        Task<string> UpdateUser(UserDto user);
     }
 }

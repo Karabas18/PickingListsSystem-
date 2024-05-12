@@ -17,7 +17,7 @@ namespace PickingListsSystem.Services
             _userRepository = userRepository;
         }
 
-        public async Task<int> AddUser(CreateUserDto user)
+        public async Task<string> AddUser(CreateUserDto user)
         {
             var entitytoAdd = _mapper.Map<CreateUserDto, User>(user);
             await _userRepository.AddUser(entitytoAdd);
@@ -42,7 +42,7 @@ namespace PickingListsSystem.Services
             return _mapper.Map<List<UserDto>>(user);
         }
 
-        public async Task<int> UpdateUser(UserDto user)
+        public async Task<string> UpdateUser(UserDto user)
         {
             var entitytoUpdate = _mapper.Map<CreateUserDto, User>(user);
             await _userRepository.UpdateUser(entitytoUpdate);

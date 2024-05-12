@@ -7,7 +7,7 @@ namespace PickingListsSystem.Services.Contracts
         Task<List<RoleDto>> GetRole();
         Task<RoleDto> GetRoleID(int id);
         Task DeleteRole(int id);
-        Task<int> AddRole(CreateRoleDto role);
-        Task<int> UpdateRole(RoleDto role);
+        Task<string> AddRole(CreateRoleDto role);
+        Task<string> UpdateRole(RoleDto role);
     }
 }
