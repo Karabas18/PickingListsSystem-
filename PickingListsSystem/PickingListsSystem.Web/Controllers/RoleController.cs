@@ -34,13 +34,13 @@ namespace PickingListsSystem.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<int> Create([FromBody] CreateRoleDto role)
+        public async Task<string> Create([FromBody] CreateRoleDto role)
         {
             return await _roleService.AddRole(role);
         }
 
         [HttpPut]
-        public async Task<int> Update([FromBody] RoleDto role)
+        public async Task<string> Update([FromBody] RoleDto role)
         {
             return await _roleService.UpdateRole(role);
         }

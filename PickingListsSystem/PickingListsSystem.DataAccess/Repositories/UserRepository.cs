@@ -19,8 +19,7 @@ namespace PickingListsSystem.DataAccess.Repositories
 
         public async Task<User> GetUserID(int id)
         {
-            var result = await _dbContext.User.FirstOrDefaultAsync(user => user.Id == id);
-            return result;
+          throw new NotImplementedException();
         }
 
         public async Task DeleteUser(int id)

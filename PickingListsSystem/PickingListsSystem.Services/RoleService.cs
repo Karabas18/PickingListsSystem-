@@ -17,7 +17,7 @@ namespace PickingListsSystem.Services
             _roleRepository = roleRepository;
         }
 
-        public async Task<int> AddRole(CreateRoleDto role)
+        public async Task<string> AddRole(CreateRoleDto role)
         {
             var entitytoAdd = _mapper.Map<CreateRoleDto, Role>(role);
             await _roleRepository.AddRole(entitytoAdd);
@@ -42,7 +42,7 @@ namespace PickingListsSystem.Services
             return _mapper.Map<List<RoleDto>>(role);
         }
 
-        public async Task<int> UpdateRole(RoleDto role)
+        public async Task<string> UpdateRole(RoleDto role)
         {
             var entitytoUpdate = _mapper.Map<CreateRoleDto, Role>(role);
             await _roleRepository.UpdateRole(entitytoUpdate);

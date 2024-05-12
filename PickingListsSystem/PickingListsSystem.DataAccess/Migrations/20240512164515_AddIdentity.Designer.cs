@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PickingListsSystem.DataAccess;
 
@@ -11,9 +12,11 @@ using PickingListsSystem.DataAccess;
 namespace PickingListsSystem.DataAccess.Migrations
 {
     [DbContext(typeof(PlsDbContext))]
-    partial class PlsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240512164515_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,28 +371,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statement");
-                });
-
-            modelBuilder.Entity("PickingListsSystem.Entities.UserRefreshToken", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ExpiresUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("IssuedUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserRefreshTokens");
                 });
 
             modelBuilder.Entity("PickingListsSystem.Entities.Work", b =>

@@ -1,13 +1,11 @@
-﻿namespace PickingListsSystem.Entities
-{
-    public class Role
-    {
-        public int Id { get; set; }
+﻿using Microsoft.AspNetCore.Identity;
 
+namespace PickingListsSystem.Entities
+{
+    public class Role: IdentityRole
+    {
         public string? RoleName { get; set; }
 
         public int? RolePriority { get; set; }
-
-        public ICollection<User> User { get; set; }
     }
 }
