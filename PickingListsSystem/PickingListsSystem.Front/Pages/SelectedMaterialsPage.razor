@@ -8,32 +8,78 @@
 <PageTitle>Selected Materials</PageTitle>
 
 <h3>Время говнокода!!!</h3>
-<h3>@selectedMaterial.Count</h3>
-<h3>@MarkMaterialService.GetSelectedMaterial().Count()</h3>
-@foreach (var item in selectedMaterial)
-{
-    <h1>@item.MaterialMark</h1>
-}
+<MudTable Items="@selectedMaterial" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Mark</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Unit</MudTh>
+        <MudTh>Gost</MudTh>
+        <MudTh>RB</MudTh>
+        <MudTh>RL</MudTh>
+        <MudTh>RH</MudTh>
+        <MudTh>V</MudTh>
+        <MudTh>Weight</MudTh>
+        <MudTh>Type</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
+        <MudTd DataLabel="Name">@context.MaterialName</MudTd>
+        <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
+        <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
+        <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
+        <MudTd DataLabel="Rl">@context.MaterialRL</MudTd>
+        <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
+        <MudTd DataLabel="V">@context.MaterialV</MudTd>
+        <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
+        <MudTd DataLabel="Type">@context.MaterialType</MudTd>
+        <MudTd DataLabel="Actions">
+            <div style="display: flex; align-items: center;">
+                <MudTableCell>@("Элементов: " + clickCounts[@context.Id])</MudTableCell>
+                <MudButton OnClick="@(() => DeleteMaterial(@context.Id))" Variant="Variant.Filled" Color="Color.Primary" Style="margin-left: 50px;">Delete</MudButton>
+            </div>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
 @code {
     private List<MaterialDto> selectedMaterial;
     private int selectedMaterialId;
+    private Dictionary<int, int> clickCounts;
 
     protected override async Task OnInitializedAsync()
     {
-        // Здесь вы будете получать выбранный материал по его ID
-        selectedMaterial = MarkMaterialService.GetSelectedMaterial().ToList();
-
-        // Очищаем список перед загрузкой новых материалов
-        //selectedMaterial = new List<MaterialDto>();
-        // Загружаем новые материалы
-        //selectedMaterial.AddRange(MarkMaterialService.GetSelectedMaterial());
-
+        var (selectedMaterials, counts) = MarkMaterialService.GetSelectedMaterial();
+        selectedMaterial = selectedMaterials.ToList();
+        clickCounts = counts;
     }
 
-    // Метод для установки выбранного материала по его ID
+
     private void SetSelectedMaterialId(int id)
     {
         selectedMaterialId = id;
-        StateHasChanged(); // Обновляем компонент, чтобы вызвать метод OnInitializedAsync снова
+        StateHasChanged(); 
     }
+
+    private async Task DeleteMaterial(int itemId)
+    {
+        await MarkMaterialService.DeleteSelectedMaterial(itemId);
+        var (selectedMaterials, counts) = MarkMaterialService.GetSelectedMaterial();
+        selectedMaterial = selectedMaterials.ToList();
+        clickCounts = counts;
+        StateHasChanged();
+    }
+    //private async Task DeleteMaterial(int itemId)
+    //{
+    //    if (clickCounts.ContainsKey(itemId))
+    //    {
+    //        clickCounts[itemId]--;
+    //        if (clickCounts[itemId] <= 0)
+    //        {
+    //            selectedMaterial.RemoveAll(item => item.Id == itemId);
+    //            clickCounts.Remove(itemId);
+                
+    //        }
+    //    }
+    //}
+
 }

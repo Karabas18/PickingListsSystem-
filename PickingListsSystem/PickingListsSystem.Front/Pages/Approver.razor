@@ -1,0 +1,31 @@
+﻿@page "/Approver"
+@using Microsoft.AspNetCore.Components.Rendering
+@using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Services
+@using PickingListsSystem.Services.Contracts
+@inject IMaterialService MaterialService
+
+<PageTitle>Index</PageTitle>
+<h3>Время говнокода x2!!!</h3>
+<MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
+    <MudTabPanel Text="One" OnClick="@ShowSelectedMaterialsPage"/>
+    <MudTabPanel Text="Two"/>
+    <MudTabPanel Text="Three"/>
+</MudTabs>
+
+<div>
+    @selectedMaterialsPageContent
+</div>
+
+@code {
+    private RenderFragment selectedMaterialsPageContent;
+
+    private void ShowSelectedMaterialsPage()
+    {
+        selectedMaterialsPageContent = builder =>
+        {
+            builder.OpenComponent(0, typeof(SelectedMaterialsPage));
+            builder.CloseComponent();
+        };
+    }
+}
