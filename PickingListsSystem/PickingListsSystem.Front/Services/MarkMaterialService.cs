@@ -6,7 +6,7 @@ namespace PickingListsSystem.Services
     public class MarkMaterialService
     {
         private static List<MaterialDto> MarkedMaterial;
-
+        private static Dictionary<int, int> ClickCounts = new Dictionary<int, int>();
         public MarkMaterialService()
         {
             MarkedMaterial = new List<MaterialDto>();
@@ -14,19 +14,34 @@ namespace PickingListsSystem.Services
 
         public async static Task AddSelectedMaterial(MaterialDto material)
         {
-            /*if (!MarkedMaterial.Contains(material))
+            if (MarkedMaterial.Any(m => m.Id == material.Id))
             {
-                MarkedMaterial.Add(material);
-            }*/
-
-            if (!MarkedMaterial.Any(m => m.Id == material.Id))
+                ClickCounts[material.Id]++;
+            }
+            else
             {
-                MarkedMaterial.Add(material);
+                MarkedMaterial.Add(material); 
+                ClickCounts[material.Id] = 1; 
             }
         }
-        public static IEnumerable<MaterialDto> GetSelectedMaterial()
+        //
+        public async static Task DeleteSelectedMaterial(int itemId)
         {
-            return MarkedMaterial;
+            if (ClickCounts.ContainsKey(itemId))
+            {
+                ClickCounts[itemId]--;
+                if (ClickCounts[itemId] <= 0)
+                {
+                    MarkedMaterial.RemoveAll(item => item.Id == itemId);
+                    ClickCounts.Remove(itemId);
+                }
+            }
         }
+        //
+        public static (IEnumerable<MaterialDto>, Dictionary<int, int>) GetSelectedMaterial()
+        {
+            return (MarkedMaterial, ClickCounts);
+        }
+
     }
 }

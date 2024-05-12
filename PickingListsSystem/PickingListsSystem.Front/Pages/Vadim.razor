@@ -1,31 +1,57 @@
 ﻿@page "/Vadim"
 @using PickingListsSystem.Dto.Materials
 @using PickingListsSystem.Services
-@using PickingListsSystem.Services.Contracts;
+@using PickingListsSystem.Services.Contracts
 @using PickingListsSystem.Front.Services
-@inject IMaterialService _materialService;
-@inject MarkMaterialService _selectedMaterialsService;
+@inject IMaterialService _materialService
+@inject MarkMaterialService _selectedMaterialsService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Materials</PageTitle>
 
-<MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
+<MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter" Sort="@_sortBy">
     <HeaderContent>
-        <MudTh>Mark</MudTh>
+        <MudTh Sortable="true" SortDirection="@_sortNameDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Name", direction))">Name</MudTh>
+        <MudTh Sortable="true" SortDirection="@_sortMarkDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Mark", direction))">Mark</MudTh>
+        <MudTh>Unit</MudTh>
         <MudTh>Gost</MudTh>
+        <MudTh>RB</MudTh>
+        <MudTh>Rl</MudTh>
+        <MudTh>RH</MudTh>
+        <MudTh>V</MudTh>
+        <MudTh>Weight</MudTh>
+        <MudTh>Type</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd DataLabel="Name">@context.MaterialName</MudTd>
         <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
+        <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
         <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
+        <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
+        <MudTd DataLabel="Rl">@context.MaterialRL</MudTd>
+        <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
+        <MudTd DataLabel="V">@context.MaterialV</MudTd>
+        <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
+        <MudTd DataLabel="Type">@context.MaterialType</MudTd>
         <MudTd DataLabel="Actions">
             <MudButton OnClick="@(() => OnEvaluateClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
         </MudTd>
     </RowTemplate>
 </MudTable>
 
+<div class="d-flex flex-wrap mt-4">
+    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+</div>
+
 @code {
     private List<MaterialDto>? materials;
+    private string _searchString;
 
-    protected async override Task OnInitializedAsync()
+    private SortDirection _sortNameDirection = SortDirection.None;
+    private SortDirection _sortMarkDirection = SortDirection.None;
+
+    protected override async Task OnInitializedAsync()
     {
         materials = await _materialService.GetMaterials();
     }
@@ -34,5 +60,52 @@
     {
         var selectedMaterial = await _materialService.GetMaterialID(id);
         await MarkMaterialService.AddSelectedMaterial(selectedMaterial);
+    }
+
+    // Quick filter
+    private Func<MaterialDto, bool> _quickFilter => material =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (material.MaterialName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialMark?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        // Add more fields if needed
+
+        return false;
+    };
+
+    // Custom sorting
+    private Func<MaterialDto, object> _sortBy => material =>
+    {
+        if (_sortNameDirection == SortDirection.Ascending)
+            return material.MaterialName;
+        else if (_sortNameDirection == SortDirection.Descending)
+            return -material.MaterialName.CompareTo("");
+
+        if (_sortMarkDirection == SortDirection.Ascending)
+            return material.MaterialMark;
+        else if (_sortMarkDirection == SortDirection.Descending)
+            return -material.MaterialMark;
+
+        return material.MaterialName; // Default sorting by name
+    };
+
+    private void ChangeSortDirection(string column, SortDirection direction)
+    {
+        if (column == "Name")
+        {
+            _sortNameDirection = direction;
+            _sortMarkDirection = SortDirection.None; // Reset Mark sort direction
+        }
+        else if (column == "Mark")
+        {
+            _sortMarkDirection = direction;
+            _sortNameDirection = SortDirection.None; // Reset Name sort direction
+        }
     }
 }
