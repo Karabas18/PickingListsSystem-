@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Services
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickingListsSystem.Dto", "PickingListsSystem.Dto\PickingListsSystem.Dto.csproj", "{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickingListsSystem.Front", "PickingListsSystem.Front\PickingListsSystem.Front.csproj", "{777DAA11-4FB9-43F0-9165-8312611F0AD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED3392EA-3DC4-4690-B67B-9B0285FCEA60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{777DAA11-4FB9-43F0-9165-8312611F0AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{777DAA11-4FB9-43F0-9165-8312611F0AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{777DAA11-4FB9-43F0-9165-8312611F0AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{777DAA11-4FB9-43F0-9165-8312611F0AD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
