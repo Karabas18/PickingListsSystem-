@@ -18,9 +18,12 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IMaterialService, MaterialService>();
+//
+builder.Services.AddScoped<IStatementService, StatementService>();
 
 //Проверить!!!
 builder.Services.AddSingleton<MarkMaterialService>();
+builder.Services.AddScoped<StatementService>();
 //
 
 await builder.Build().RunAsync();

@@ -1,8 +1,10 @@
 ﻿@page "/SelectedMaterialsPage"
 @using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Dto.Statement
 @using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts;
 @inject IMaterialService _selectedMaterialsService
+@inject IStatementService _statementService;
 @inject MarkMaterialService _selectedMaterialsService;
 
 <PageTitle>Selected Materials</PageTitle>
@@ -40,6 +42,13 @@
             </div>
         </MudTd>
     </RowTemplate>
+    <FooterContent>
+        <MudTr>
+            <MudTd Colspan="10">
+                <MudButton OnClick="@SaveToDatabase" Variant="Variant.Filled" Color="Color.Primary">Save to Database</MudButton>
+            </MudTd>
+        </MudTr>
+    </FooterContent>
 </MudTable>
 @code {
     private List<MaterialDto> selectedMaterial;
@@ -68,18 +77,27 @@
         clickCounts = counts;
         StateHasChanged();
     }
-    //private async Task DeleteMaterial(int itemId)
-    //{
-    //    if (clickCounts.ContainsKey(itemId))
-    //    {
-    //        clickCounts[itemId]--;
-    //        if (clickCounts[itemId] <= 0)
-    //        {
-    //            selectedMaterial.RemoveAll(item => item.Id == itemId);
-    //            clickCounts.Remove(itemId);
-                
-    //        }
-    //    }
-    //}
 
+    private async Task SaveToDatabase()
+    {
+            foreach (var material in selectedMaterial)
+            {
+                // Создаем новый объект StatementDto
+                var statementId = await _statementService.AddStatement(new CreateStatementDto
+                {
+                    StatementStatus = "Saved",
+                    StatementDate = DateTime.UtcNow,
+                });
+
+                // Получаем список ID выбранных материалов
+                var materialIds = selectedMaterial.Select(m => m.Id).ToList();
+
+                // Добавляем материалы к ведомости
+                await _statementService.AddMaterialsToStatement(statementId, materialIds);
+            }
+
+            // Очищаем список выбранных материалов после сохранения в базу данных
+            selectedMaterial.Clear();
+            clickCounts.Clear();
+    }
 }

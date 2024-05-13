@@ -31,5 +31,4 @@ public class PlsDbContext : IdentityDbContext
     public virtual DbSet<Project> Project { get; set; }
 
     public virtual DbSet<Statement> Statement { get; set; }
-
 }

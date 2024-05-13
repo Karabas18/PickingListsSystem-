@@ -9,5 +9,7 @@ namespace PickingListsSystem.DataAccess.Contracts
         Task DeleteStatement(int id);
         Task<Statement> AddStatement(Statement statement);
         Task<Statement> UpdateStatement(Statement statement);
+        //
+        Task AddMaterialsToStatement(int statementId, List<int> materialIds);
     }
 }

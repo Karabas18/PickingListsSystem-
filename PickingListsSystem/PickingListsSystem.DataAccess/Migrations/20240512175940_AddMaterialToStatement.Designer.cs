@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PickingListsSystem.DataAccess;
 
@@ -11,9 +12,11 @@ using PickingListsSystem.DataAccess;
 namespace PickingListsSystem.DataAccess.Migrations
 {
     [DbContext(typeof(PlsDbContext))]
-    partial class PlsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240512175940_AddMaterialToStatement")]
+    partial class AddMaterialToStatement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MaterialStatement", b =>
-                {
-                    b.Property<int>("MaterialsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatementId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MaterialsId", "StatementId");
-
-                    b.HasIndex("StatementId");
-
-                    b.ToTable("MaterialStatement");
-                });
 
             modelBuilder.Entity("MaterialWork", b =>
                 {
@@ -329,7 +317,12 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.Property<int?>("MaterialWeight")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StatementId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StatementId");
 
                     b.ToTable("Materials");
                 });
@@ -538,21 +531,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("MaterialStatement", b =>
-                {
-                    b.HasOne("PickingListsSystem.Entities.Material", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PickingListsSystem.Entities.Statement", null)
-                        .WithMany()
-                        .HasForeignKey("StatementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MaterialWork", b =>
                 {
                     b.HasOne("PickingListsSystem.Entities.Material", null)
@@ -617,6 +595,13 @@ namespace PickingListsSystem.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PickingListsSystem.Entities.Material", b =>
+                {
+                    b.HasOne("PickingListsSystem.Entities.Statement", null)
+                        .WithMany("Materials")
+                        .HasForeignKey("StatementId");
                 });
 
             modelBuilder.Entity("PickingListsSystem.Entities.Project", b =>
@@ -696,6 +681,11 @@ namespace PickingListsSystem.DataAccess.Migrations
             modelBuilder.Entity("PickingListsSystem.Entities.Customer", b =>
                 {
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("PickingListsSystem.Entities.Statement", b =>
+                {
+                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("PickingListsSystem.Entities.WorkGroup", b =>

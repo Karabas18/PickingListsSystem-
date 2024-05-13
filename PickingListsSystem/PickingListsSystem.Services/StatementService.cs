@@ -10,11 +10,13 @@ namespace PickingListsSystem.Services
     {
         private readonly IMapper _mapper;
         private readonly IStatementRepository _statementRepository;
+        private readonly IMaterialRepository _materialRepository;
 
-        public StatementService(IMapper mapper, IStatementRepository statementRepository)
+        public StatementService(IMapper mapper, IStatementRepository statementRepository, IMaterialRepository materialRepository)
         {
             _mapper = mapper;
             _statementRepository = statementRepository;
+            _materialRepository = materialRepository; 
         }
 
         public async Task<int> AddStatement(CreateStatementDto statement)
@@ -31,7 +33,6 @@ namespace PickingListsSystem.Services
 
         public async Task<StatementDto> GetStatementID(int id)
         {
-            //return _mapper.Map<MaterialDto>(await _materialRepository.GetMaterialID(id));
             var statement = await _statementRepository.GetStatementID(id);
             return _mapper.Map<StatementDto>(statement);
         }
@@ -47,6 +48,24 @@ namespace PickingListsSystem.Services
             var entitytoUpdate = _mapper.Map<CreateStatementDto, Statement>(statement);
             await _statementRepository.UpdateStatement(entitytoUpdate);
             return entitytoUpdate.Id;
+        }
+        //
+        public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)
+        {
+            var statement = await _statementRepository.GetStatementID(statementId);
+
+            if (statement != null)
+            {
+                foreach (var materialId in materialIds)
+                {
+                    var material = await _materialRepository.GetMaterialID(materialId);
+                    if (material != null)
+                    {
+                        statement.Materials.Add(material);
+                    }
+                }
+                await _statementRepository.UpdateStatement(statement);
+            }
         }
     }
 }

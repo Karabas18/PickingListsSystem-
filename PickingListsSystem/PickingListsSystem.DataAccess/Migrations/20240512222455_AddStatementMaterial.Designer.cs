@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PickingListsSystem.DataAccess;
 
@@ -11,9 +12,11 @@ using PickingListsSystem.DataAccess;
 namespace PickingListsSystem.DataAccess.Migrations
 {
     [DbContext(typeof(PlsDbContext))]
-    partial class PlsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240512222455_AddStatementMaterial")]
+    partial class AddStatementMaterial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MaterialStatement", b =>
-                {
-                    b.Property<int>("MaterialsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatementId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MaterialsId", "StatementId");
-
-                    b.HasIndex("StatementId");
-
-                    b.ToTable("MaterialStatement");
-                });
 
             modelBuilder.Entity("MaterialWork", b =>
                 {
@@ -374,6 +362,9 @@ namespace PickingListsSystem.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("StatementDate")
                         .HasColumnType("datetime2");
 
@@ -382,7 +373,28 @@ namespace PickingListsSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProjectId");
+
                     b.ToTable("Statement");
+                });
+
+            modelBuilder.Entity("PickingListsSystem.Entities.StatementMaterial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatementId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatementMaterial");
                 });
 
             modelBuilder.Entity("PickingListsSystem.Entities.UserRefreshToken", b =>
@@ -477,21 +489,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.ToTable("WorkType");
                 });
 
-            modelBuilder.Entity("ProjectStatement", b =>
-                {
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatementId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectId", "StatementId");
-
-                    b.HasIndex("StatementId");
-
-                    b.ToTable("ProjectStatement");
-                });
-
             modelBuilder.Entity("ProjectWorkGroup", b =>
                 {
                     b.Property<int>("ProjectsId")
@@ -536,21 +533,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.HasIndex("WorkGroupId");
 
                     b.HasDiscriminator().HasValue("User");
-                });
-
-            modelBuilder.Entity("MaterialStatement", b =>
-                {
-                    b.HasOne("PickingListsSystem.Entities.Material", null)
-                        .WithMany()
-                        .HasForeignKey("MaterialsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PickingListsSystem.Entities.Statement", null)
-                        .WithMany()
-                        .HasForeignKey("StatementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MaterialWork", b =>
@@ -638,6 +620,13 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.Navigation("WorkType");
                 });
 
+            modelBuilder.Entity("PickingListsSystem.Entities.Statement", b =>
+                {
+                    b.HasOne("PickingListsSystem.Entities.Project", null)
+                        .WithMany("Statement")
+                        .HasForeignKey("ProjectId");
+                });
+
             modelBuilder.Entity("PickingListsSystem.Entities.Work", b =>
                 {
                     b.HasOne("PickingListsSystem.Entities.WorkType", "WorkType")
@@ -654,21 +643,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                         .HasForeignKey("WorkGroupDirectorId1");
 
                     b.Navigation("WorkGroupDirector");
-                });
-
-            modelBuilder.Entity("ProjectStatement", b =>
-                {
-                    b.HasOne("PickingListsSystem.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PickingListsSystem.Entities.Statement", null)
-                        .WithMany()
-                        .HasForeignKey("StatementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectWorkGroup", b =>
@@ -696,6 +670,11 @@ namespace PickingListsSystem.DataAccess.Migrations
             modelBuilder.Entity("PickingListsSystem.Entities.Customer", b =>
                 {
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("PickingListsSystem.Entities.Project", b =>
+                {
+                    b.Navigation("Statement");
                 });
 
             modelBuilder.Entity("PickingListsSystem.Entities.WorkGroup", b =>

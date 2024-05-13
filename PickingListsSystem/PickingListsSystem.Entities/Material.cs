@@ -25,5 +25,7 @@
         public int? MaterialType { get; set; }
 
         public ICollection<Work> Work { get; set; }
+
+        public ICollection<Statement> Statement { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace PickingListsSystem.API.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>
-                    policy.RequireClaim(ClaimTypes.Role, UserRoleEnum.admin.ToString()));
+                    policy.RequireClaim(ClaimTypes.Role, "Admin"));
             });
         }
 

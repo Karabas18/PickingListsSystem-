@@ -51,5 +51,11 @@ namespace PickingListsSystem.Web.Controllers
             await _statementService.DeleteStatement(id);
         }
 
+        [HttpPost("addMaterials")]
+        public async Task<IActionResult> AddMaterialsToStatement(int statementId, List<int> materialIds)
+        {
+            await _statementService.AddMaterialsToStatement(statementId, materialIds);
+            return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        }
     }
 }
