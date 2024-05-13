@@ -80,15 +80,14 @@
 
     private async Task SaveToDatabase()
     {
-            foreach (var material in selectedMaterial)
-            {
-                // Создаем новый объект StatementDto
                 var statementId = await _statementService.AddStatement(new CreateStatementDto
                 {
                     StatementStatus = "Saved",
                     StatementDate = DateTime.UtcNow,
                 });
-
+            foreach (var material in selectedMaterial)
+            {
+               
                 // Получаем список ID выбранных материалов
                 var materialIds = selectedMaterial.Select(m => m.Id).ToList();
 

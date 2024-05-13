@@ -16,15 +16,22 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
+        public class AddMaterialsRequest
+        {
+            public int StatementId { get; set; }
+            public List<int> MaterialIds { get; set; }
+        }
+
         public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)
         {
-            var response = await _httpClient.PostAsJsonAsync($"api/Statement/addMaterials?statementId={statementId}", materialIds);
+            AddMaterialsRequest request = new AddMaterialsRequest() { StatementId = statementId, MaterialIds = materialIds };
+            var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<int> AddStatement(CreateStatementDto statement)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Statement", statement);
+            var response = await _httpClient.PostAsJsonAsync("/Statement", statement);
             response.EnsureSuccessStatusCode();
 
             // Возвращаем Id добавленной ведомости
