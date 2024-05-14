@@ -18,13 +18,13 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IMaterialService, MaterialService>();
-//
+builder.Services.AddScoped<IWorkService, WorkService>();
 builder.Services.AddScoped<IStatementService, StatementService>();
 
 //Проверить!!!
 builder.Services.AddSingleton<MarkMaterialService>();
+builder.Services.AddSingleton<MarkWorkService>();
 builder.Services.AddScoped<StatementService>();
-//
 
 await builder.Build().RunAsync();
 

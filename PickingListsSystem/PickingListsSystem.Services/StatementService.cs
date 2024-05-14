@@ -11,12 +11,20 @@ namespace PickingListsSystem.Services
         private readonly IMapper _mapper;
         private readonly IStatementRepository _statementRepository;
         private readonly IMaterialRepository _materialRepository;
-
-        public StatementService(IMapper mapper, IStatementRepository statementRepository, IMaterialRepository materialRepository)
+        private readonly IWorkRepository _workRepository;
+        //конструктор исправить
+        //public StatementService(IMapper mapper, IStatementRepository statementRepository, IMaterialRepository materialRepository)
+        //{
+        //    _mapper = mapper;
+        //    _statementRepository = statementRepository;
+        //    _materialRepository = materialRepository; 
+        //}
+        public StatementService(IMapper mapper, IStatementRepository statementRepository, IMaterialRepository materialRepository, IWorkRepository workRepository)
         {
             _mapper = mapper;
             _statementRepository = statementRepository;
-            _materialRepository = materialRepository; 
+            _materialRepository = materialRepository;
+            _workRepository = workRepository;
         }
 
         public async Task<int> AddStatement(CreateStatementDto statement)
@@ -62,6 +70,24 @@ namespace PickingListsSystem.Services
                     if (material != null)
                     {
                         statement.Materials.Add(material);
+                    }
+                }
+                await _statementRepository.UpdateStatement(statement);
+            }
+        }
+        //
+        public async Task AddWorkToStatement(int statementId, List<int> workIds)
+        {
+            var statement = await _statementRepository.GetStatementID(statementId);
+
+            if (statement != null)
+            {
+                foreach (var workId in workIds)
+                {
+                    var work = await _workRepository.GetWorkID(workId);
+                    if (work != null)
+                    {
+                        statement.Work.Add(work);
                     }
                 }
                 await _statementRepository.UpdateStatement(statement);

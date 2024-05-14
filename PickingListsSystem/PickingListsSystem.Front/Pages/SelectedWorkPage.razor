@@ -1,0 +1,88 @@
+﻿@page "/SelectedWorkPage"
+@using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Dto.Statement
+@using PickingListsSystem.Services
+@using PickingListsSystem.Services.Contracts
+@using PickingListsSystem.Front.Services
+@inject IWorkService _selectedWorkService
+@inject IStatementService _statementService
+@inject MarkWorkService _selectedWorkService
+
+<PageTitle>Selected Work</PageTitle>
+
+<h3>Time for some code smell!!!</h3>
+<MudTable Items="@selectedWork" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Code</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Unit</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Code">@context.WorkCode</MudTd>
+        <MudTd DataLabel="Description">@context.WorkDescription</MudTd>
+        <MudTd DataLabel="Unit">@context.WorkUnitMeasurement</MudTd>
+        <MudTd DataLabel="Actions">
+            <div style="display: flex; align-items: center;">
+                <MudTableCell>@("Элементы: " + clickCounts[@context.Id])</MudTableCell>
+                <MudButton OnClick="@(() => DeleteWork(@context.Id))" Variant="Variant.Filled" Color="Color.Primary" Style="margin-left: 50px;">Delete</MudButton>
+            </div>
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTr>
+            <MudTd Colspan="4">
+                <MudButton OnClick="@SaveToDatabase" Variant="Variant.Filled" Color="Color.Primary">Save to Database</MudButton>
+            </MudTd>
+        </MudTr>
+    </FooterContent>
+</MudTable>
+@code {
+    private List<WorkDto> selectedWork;
+    private int selectedWorkId;
+    private Dictionary<int, int> clickCounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var (selectedWorks, counts) = MarkWorkService.GetSelectedWork();
+        selectedWork = selectedWorks.ToList();
+        clickCounts = counts;
+    }
+
+    private void SetSelectedWorkId(int id)
+    {
+        selectedWorkId = id;
+        StateHasChanged(); 
+    }
+
+    private async Task DeleteWork(int itemId)
+    {
+        await MarkWorkService.DeleteSelectedWork(itemId);
+        var (selectedWorks, counts) = MarkWorkService.GetSelectedWork();
+        selectedWork = selectedWorks.ToList();
+        clickCounts = counts;
+        StateHasChanged();
+    }
+
+    private async Task SaveToDatabase()
+    {
+        var statementId = await _statementService.AddStatement(new CreateStatementDto
+        {
+            StatementStatus = "Saved",
+            StatementDate = DateTime.UtcNow,
+        });
+
+        foreach (var work in selectedWork)
+        {
+            // Получаем список ID выбранных работ
+            var workIds = selectedWork.Select(w => w.Id).ToList();
+
+            // Добавляем работы к ведомости
+            await _statementService.AddWorkToStatement(statementId, workIds);
+        }
+
+        // Очищаем список выбранных работ после сохранения в базу данных
+        selectedWork.Clear();
+        clickCounts.Clear();
+    }
+}

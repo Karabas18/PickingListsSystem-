@@ -65,5 +65,22 @@ namespace PickingListsSystem.DataAccess.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+        public async Task AddWorkToStatement(int statementId, List<int> workIds)
+        {
+            var statement = await _dbContext.Statement.FindAsync(statementId);
+
+            if (statement != null)
+            {
+                foreach (var workId in workIds)
+                {
+                    var work = await _dbContext.Work.FindAsync(workId);
+                    if (work != null)
+                    {
+                        statement.Work.Add(work);
+                    }
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

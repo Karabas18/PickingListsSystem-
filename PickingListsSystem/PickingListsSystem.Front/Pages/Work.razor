@@ -1,0 +1,97 @@
+﻿@page "/Work"
+@using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Services
+@using PickingListsSystem.Services.Contracts
+@using PickingListsSystem.Front.Services
+@inject IWorkService _workService
+@inject MarkWorkService _selectedWorkService
+
+<PageTitle>Work</PageTitle>
+
+<MudTable Items="@work" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter" Sort="@_sortBy">
+    <HeaderContent>
+        <MudTh Sortable="true" SortDirection="@_sortCodeDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Code", direction))">Code</MudTh>
+        <MudTh Sortable="true" SortDirection="@_sortDescriptionDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Description", direction))">Description</MudTh>
+        <MudTh>Unit</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Code">@context.WorkCode</MudTd>
+        <MudTd DataLabel="Description">@context.WorkDescription</MudTd>
+        <MudTd DataLabel="Unit">@context.WorkUnitMeasurement</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OnEvaluateClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+</div>
+
+@code {
+    private List<WorkDto>? work;
+    private string _searchString;
+
+    private SortDirection _sortCodeDirection = SortDirection.None;
+    private SortDirection _sortDescriptionDirection = SortDirection.None;
+
+    protected override async Task OnInitializedAsync()
+    {
+        work = await _workService.GetWork();
+    }
+
+    private async Task OnEvaluateClick(int id)
+    {
+        var selectedWork = await _workService.GetWorkID(id);
+        await MarkWorkService.AddSelectedWork(selectedWork);
+    }
+
+    // Quick filter
+    private Func<WorkDto, bool> _quickFilter => work =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (work.WorkCode?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (work.WorkDescription?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        // Add more fields if needed
+
+        return false;
+    };
+
+    // Custom sorting
+    private Func<WorkDto, object> _sortBy => work =>
+    {
+        if (_sortCodeDirection == SortDirection.Ascending)
+            return work.WorkCode;
+        else if (_sortCodeDirection == SortDirection.Descending)
+            return -work.WorkCode.CompareTo("");
+
+        if (_sortDescriptionDirection == SortDirection.Ascending)
+            return work.WorkDescription;
+        else if (_sortDescriptionDirection == SortDirection.Descending)
+            return -work.WorkDescription.CompareTo("");;
+
+        return work.WorkCode; // Default sorting by code
+    };
+
+    private void ChangeSortDirection(string column, SortDirection direction)
+    {
+        if (column == "Code")
+        {
+            _sortCodeDirection = direction;
+            _sortDescriptionDirection = SortDirection.None; // Reset Description sort direction
+        }
+        else if (column == "Description")
+        {
+            _sortDescriptionDirection = direction;
+            _sortCodeDirection = SortDirection.None; // Reset Code sort direction
+        }
+    }
+}

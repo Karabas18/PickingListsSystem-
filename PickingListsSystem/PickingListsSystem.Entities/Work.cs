@@ -14,6 +14,8 @@
         public WorkType WorkType { get; set; }
 
         public ICollection<Material> Material { get; set; }
+        //
+        public ICollection<Statement> Statement { get; set; }
 
     }
 }

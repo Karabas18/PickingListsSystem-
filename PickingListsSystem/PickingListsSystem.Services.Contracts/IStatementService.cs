@@ -11,5 +11,7 @@ namespace PickingListsSystem.Services.Contracts
         Task<int> UpdateStatement(StatementDto statement);
         //
         Task AddMaterialsToStatement(int statementId, List<int> materialIds);
+        //
+        Task AddWorkToStatement(int statementId, List<int> workIds);
     }
 }

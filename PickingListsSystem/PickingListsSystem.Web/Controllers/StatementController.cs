@@ -63,6 +63,19 @@ namespace PickingListsSystem.Web.Controllers
             await _statementService.AddMaterialsToStatement(request.StatementId, request.MaterialIds);
             return Ok(); // Возвращаем 200 OK в случае успешного добавления
         }
+        ////
+        public class AddWorkRequest
+        {
+            public int StatementId { get; set; }
+            public List<int> WorkIds { get; set; }
+        }
+
+        [HttpPost("addWork")]
+        public async Task<IActionResult> AddWorkToStatement([FromBody] AddWorkRequest request)
+        {
+            await _statementService.AddWorkToStatement(request.StatementId, request.WorkIds);
+            return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        }
 
     }
 }

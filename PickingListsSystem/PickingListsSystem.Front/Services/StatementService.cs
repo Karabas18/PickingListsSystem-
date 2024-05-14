@@ -28,7 +28,20 @@ namespace PickingListsSystem.Front.Services
             var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
             response.EnsureSuccessStatusCode();
         }
+        ////
+        public class AddWorkRequest
+        {
+            public int StatementId { get; set; }
+            public List<int> WorkIds { get; set; }
+        }
 
+        public async Task AddWorkToStatement(int statementId, List<int> workIds)
+        {
+            AddWorkRequest request = new AddWorkRequest() { StatementId = statementId, WorkIds = workIds };
+            var response = await _httpClient.PostAsJsonAsync($"/Statement/addWork", request);
+            response.EnsureSuccessStatusCode();
+        }
+        //
         public async Task<int> AddStatement(CreateStatementDto statement)
         {
             var response = await _httpClient.PostAsJsonAsync("/Statement", statement);

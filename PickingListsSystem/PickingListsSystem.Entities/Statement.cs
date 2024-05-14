@@ -11,5 +11,7 @@
 
         //public ICollection<Material> Materials { get; set; }
         public ICollection<Material> Materials { get; set; } = new List<Material>();
+        //
+        public ICollection<Work> Work { get; set; } = new List<Work>();
     }
 }

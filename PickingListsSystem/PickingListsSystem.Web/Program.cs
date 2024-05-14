@@ -72,6 +72,8 @@ builder.Services.AddScoped<IStatementRepository, StatementRepository>(); //state
 builder.Services.AddScoped<IStatementService, StatementService>();
 
 builder.Services.AddAutoMapper(typeof(MaterialProfile));
+//
+builder.Services.AddAutoMapper(typeof(WorkProfile));
 
 var app = builder.Build();
 
