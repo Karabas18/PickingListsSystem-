@@ -11,15 +11,29 @@ namespace PickingListsSystem.DataAccess.Repositories
         {
 
         }
+        //public async Task<List<Statement>> GetStatement()
+        //{
+        //    var result = await _dbContext.Statement.ToListAsync();
+        //    return result;
+        //}
         public async Task<List<Statement>> GetStatement()
         {
-            var result = await _dbContext.Statement.ToListAsync();
+            var result = await _dbContext.Statement
+                                          .Include(statement => statement.Materials)
+                                          .ToListAsync();
             return result;
         }
-
+        //
+        //public async Task<Statement> GetStatementID(int id)
+        //{
+        //    var result = await _dbContext.Statement.FirstOrDefaultAsync(statement => statement.Id == id);
+        //    return result;
+        //}
         public async Task<Statement> GetStatementID(int id)
         {
-            var result = await _dbContext.Statement.FirstOrDefaultAsync(statement => statement.Id == id);
+            var result = await _dbContext.Statement
+                                          .Include(statement => statement.Materials)
+                                          .FirstOrDefaultAsync(statement => statement.Id == id);
             return result;
         }
 

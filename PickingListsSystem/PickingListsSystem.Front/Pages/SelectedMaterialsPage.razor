@@ -7,9 +7,9 @@
 @inject IStatementService _statementService;
 @inject MarkMaterialService _selectedMaterialsService;
 
+
 <PageTitle>Selected Materials</PageTitle>
 
-<h3>Время говнокода!!!</h3>
 <MudTable Items="@selectedMaterial" Hover="true" Breakpoint="Breakpoint.Sm">
     <HeaderContent>
         <MudTh>Mark</MudTh>
@@ -50,18 +50,62 @@
         </MudTr>
     </FooterContent>
 </MudTable>
+
+@if (selectedStatementMaterials != null)
+{
+    <h4>Содержимое ведомостей</h4>
+    @*<MudTable Items="@selectedStatementMaterials" Hover="true" Breakpoint="Breakpoint.Sm">*@
+    <MudTable Items="@selectedStatementMaterials.Where(x => StatementIDonly.Contains(x.Id))" Hover="true" Breakpoint="Breakpoint.Sm">
+        <HeaderContent>
+            <MudTh>Status</MudTh>
+            <MudTh>Date</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Unit</MudTh>
+            <MudTh>Gost</MudTh>
+            <MudTh>RB</MudTh>
+            <MudTh>RL</MudTh>
+            <MudTh>RH</MudTh>
+            <MudTh>V</MudTh>
+            <MudTh>Weight</MudTh>
+            <MudTh>Type</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Status">@context.StatementStatus</MudTd>
+            <MudTd DataLabel="Date">@context.StatementDate</MudTd>
+            <MudTd DataLabel="Name">@foreach(var materialname in context.Materials){@materialname.MaterialName<br>}</MudTd>
+            <MudTd DataLabel="Unit">@foreach(var unitname in context.Materials){@unitname.MaterialUnit<br>}</MudTd>
+            <MudTd DataLabel="Gost">@foreach(var go in context.Materials){@go.MaterialGost<br>}</MudTd>
+            <MudTd DataLabel="RB">@foreach(var rb in context.Materials){@rb.MaterialRB<br>}</MudTd>
+            <MudTd DataLabel="RL">@foreach(var rl in context.Materials){@rl.MaterialRL<br>}</MudTd>
+            <MudTd DataLabel="RH">@foreach(var rh in context.Materials){@rh.MaterialRH<br>}</MudTd>
+            <MudTd DataLabel="V">@foreach(var v in context.Materials){@v.MaterialV<br>}</MudTd>
+            <MudTd DataLabel="Weight">@foreach(var w in context.Materials){@w.MaterialWeight<br>}</MudTd>
+            <MudTd DataLabel="Type">@foreach(var t in context.Materials){@t.MaterialType<br>}</MudTd>
+        </RowTemplate>
+    </MudTable>
+    <div style="margin-top: 20px;">
+        <MudButton OnClick="@LoadSelectedStatementMaterials" Variant="Variant.Filled" Color="Color.Primary">Обновить таблицу</MudButton>
+    </div>
+}
+
 @code {
     private List<MaterialDto> selectedMaterial;
+
+    private List<StatementDto> selectedStatementMaterials;
+    private List<int> StatementIDonly = new List<int>();
+
     private int selectedMaterialId;
     private Dictionary<int, int> clickCounts;
+
 
     protected override async Task OnInitializedAsync()
     {
         var (selectedMaterials, counts) = MarkMaterialService.GetSelectedMaterial();
         selectedMaterial = selectedMaterials.ToList();
         clickCounts = counts;
-    }
 
+        selectedStatementMaterials = await _statementService.GetStatement();
+    }
 
     private void SetSelectedMaterialId(int id)
     {
@@ -80,23 +124,33 @@
 
     private async Task SaveToDatabase()
     {
-                var statementId = await _statementService.AddStatement(new CreateStatementDto
-                {
+        var statementId = await _statementService.AddStatement(new CreateStatementDto
+        {
                     StatementStatus = "Saved",
                     StatementDate = DateTime.UtcNow,
-                });
-            foreach (var material in selectedMaterial)
-            {
-               
-                // Получаем список ID выбранных материалов
-                var materialIds = selectedMaterial.Select(m => m.Id).ToList();
+        });
 
-                // Добавляем материалы к ведомости
-                await _statementService.AddMaterialsToStatement(statementId, materialIds);
-            }
+        foreach (var material in selectedMaterial)
+        {
 
-            // Очищаем список выбранных материалов после сохранения в базу данных
-            selectedMaterial.Clear();
-            clickCounts.Clear();
+            var materialIds = selectedMaterial.Select(m => m.Id).ToList();
+
+            await _statementService.AddMaterialsToStatement(statementId, materialIds);
+        }
+        StatementIDonly.Add(statementId);
+        //var statement = await _statementService.GetStatementID(statementId);
+        //selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
+        //StatementIDonly.Add(statementId);
+        //var statementMat = selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
+        StateHasChanged();
+        selectedMaterial.Clear();
+        clickCounts.Clear();
     }
+
+    private async Task LoadSelectedStatementMaterials()
+    {
+        selectedStatementMaterials = await _statementService.GetStatement();
+        StateHasChanged();
+    }
+    
 }

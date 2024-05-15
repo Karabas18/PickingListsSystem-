@@ -28,7 +28,7 @@ namespace PickingListsSystem.Front.Services
             var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
             response.EnsureSuccessStatusCode();
         }
-        ////
+        //
         public class AddWorkRequest
         {
             public int StatementId { get; set; }
@@ -58,12 +58,22 @@ namespace PickingListsSystem.Front.Services
 
         public async Task<List<StatementDto>> GetStatement()
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetFromJsonAsync<List<StatementDto>>($"Statement");
+            return response ?? throw new HttpRequestException("Couldn't get vessels");
         }
 
         public async Task<StatementDto> GetStatementID(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync($"Statement/getbyid?id={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var statementDto = await response.Content.ReadFromJsonAsync<StatementDto>();
+                return statementDto ?? throw new HttpRequestException($"Couldn't get statement with ID {id}");
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to get statement with ID {id}. Status code: {response.StatusCode}");
+            }
         }
 
         public async Task<int> UpdateStatement(StatementDto statement)

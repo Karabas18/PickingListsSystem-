@@ -76,6 +76,5 @@ namespace PickingListsSystem.Web.Controllers
             await _statementService.AddWorkToStatement(request.StatementId, request.WorkIds);
             return Ok(); // Возвращаем 200 OK в случае успешного добавления
         }
-
     }
 }
