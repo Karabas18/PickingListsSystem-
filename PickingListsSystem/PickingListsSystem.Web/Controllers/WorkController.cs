@@ -51,5 +51,18 @@ namespace PickingListsSystem.Web.Controllers
             await _workService.DeleteWork(id);
         }
 
+        public class AddWorkRequest1
+        {
+            public int WorkId { get; set; }
+            public List<int> MaterialIds { get; set; }
+        }
+
+        [HttpPost("addWorkMaterials")]
+        public async Task<IActionResult> AddMaterialsToWork([FromBody] AddWorkRequest1 request)
+        {
+            await _workService.AddMaterialsToWork(request.WorkId, request.MaterialIds);
+            return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        }
+
     }
 }

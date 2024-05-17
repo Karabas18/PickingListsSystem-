@@ -10,6 +10,6 @@ namespace PickingListsSystem.DataAccess.Contracts
         Task<Work> AddWork(Work work);
         Task<Work> UpdateWork(Work work);
         //
-        Task AddMaterialsToWork(int statementId, List<int> materialIds);
+        Task AddMaterialsToWork(int workId, List<int> materialIds);
     }
 }

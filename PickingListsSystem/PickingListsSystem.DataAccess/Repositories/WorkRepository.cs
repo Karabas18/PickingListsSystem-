@@ -10,15 +10,31 @@ namespace PickingListsSystem.DataAccess.Repositories
         {
 
         }
+        //public async Task<List<Work>> GetWork()
+        //{
+        //    var result = await _dbContext.Work.ToListAsync();
+        //    return result;
+        //}
+
         public async Task<List<Work>> GetWork()
         {
-            var result = await _dbContext.Work.ToListAsync();
+            var result = await _dbContext.Work
+                                          .Include(work => work.Materials)
+                                          .ToListAsync();
             return result;
         }
 
+        //public async Task<Work> GetWorkID(int id)
+        //{
+        //    var result = await _dbContext.Work.FirstOrDefaultAsync(work => work.Id == id);
+        //    return result;
+        //}
+
         public async Task<Work> GetWorkID(int id)
         {
-            var result = await _dbContext.Work.FirstOrDefaultAsync(work => work.Id == id);
+            var result = await _dbContext.Work
+                                          .Include(work => work.Materials)
+                                          .FirstOrDefaultAsync(work => work.Id == id);
             return result;
         }
 

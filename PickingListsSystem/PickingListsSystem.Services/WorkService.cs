@@ -34,7 +34,6 @@ namespace PickingListsSystem.Services
 
         public async Task<WorkDto> GetWorkID(int id)
         {
-            //return _mapper.Map<MaterialDto>(await _materialRepository.GetMaterialID(id));
             var work = await _workRepository.GetWorkID(id);
             return _mapper.Map<WorkDto>(work);
         }
@@ -56,7 +55,7 @@ namespace PickingListsSystem.Services
         {
             var work = await _workRepository.GetWorkID(workId);
 
-            if (work != null)//stop
+            if (work != null)
             {
                 foreach (var materialId in materialIds)
                 {

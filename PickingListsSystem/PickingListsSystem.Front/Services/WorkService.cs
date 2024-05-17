@@ -48,9 +48,17 @@ namespace PickingListsSystem.Front.Services
             throw new NotImplementedException();
         }
 
-        public Task AddMaterialsToWork(int statementId, List<int> materialIds)
+        public class AddWorkRequest1
         {
-            throw new NotImplementedException();
+            public int WorkId { get; set; }
+            public List<int> MaterialIds { get; set; }
+        }
+
+        public async Task AddMaterialsToWork(int workId, List<int> materialIds)
+        {
+            AddWorkRequest1 request = new AddWorkRequest1() { WorkId = workId, MaterialIds = materialIds };
+            var response = await _httpClient.PostAsJsonAsync($"/Work/addMaterials", request);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

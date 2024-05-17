@@ -44,6 +44,7 @@ builder.Services.AddAuthConfiguration(builder.Configuration);
 
 builder.Services.AddScoped<IAuthService, AuthService>(); 
 builder.Services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
+
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>(); //scoped singelton transient
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 
