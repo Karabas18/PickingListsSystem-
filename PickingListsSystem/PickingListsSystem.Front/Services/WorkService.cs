@@ -47,5 +47,10 @@ namespace PickingListsSystem.Front.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task AddMaterialsToWork(int statementId, List<int> materialIds)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

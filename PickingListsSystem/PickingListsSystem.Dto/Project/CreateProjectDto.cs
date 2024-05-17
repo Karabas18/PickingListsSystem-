@@ -7,5 +7,7 @@
         public string? ProjectPlan { get; set; }
 
         public string? ProjectStatus { get; set; }
+
+        public int CustomerId { get; set; }//add
     }
 }

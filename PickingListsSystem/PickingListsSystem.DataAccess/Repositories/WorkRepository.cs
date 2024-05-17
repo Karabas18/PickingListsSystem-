@@ -46,5 +46,23 @@ namespace PickingListsSystem.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
             return work;
         }
+
+        public async Task AddMaterialsToWork(int workId, List<int> materialIds)
+        {
+            var work = await _dbContext.Work.FindAsync(workId);
+
+            if (work != null)
+            {
+                foreach (var materialId in materialIds)
+                {
+                    var material = await _dbContext.Materials.FindAsync(materialId);
+                    if (material != null)
+                    {
+                        work.Materials.Add(material);
+                    }
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

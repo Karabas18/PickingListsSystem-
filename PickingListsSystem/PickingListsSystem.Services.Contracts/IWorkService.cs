@@ -9,5 +9,7 @@ namespace PickingListsSystem.Services.Contracts
         Task DeleteWork(int id);
         Task<int> AddWork(CreateWorkDto work);
         Task<int> UpdateWork(WorkDto work);
+        //
+        Task AddMaterialsToWork(int statementId, List<int> materialIds);
     }
 }

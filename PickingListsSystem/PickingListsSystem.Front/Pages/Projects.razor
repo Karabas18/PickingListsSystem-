@@ -1,0 +1,36 @@
+﻿@page "/Projects"
+@using PickingListsSystem.Dto.Project
+@using PickingListsSystem.Services.Contracts
+@inject IProjectService _projectService
+<PageTitle>Projects</PageTitle>
+
+<MudTable Items="@projects" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Project Object</MudTh>
+        <MudTh>Project Plan</MudTh>
+        <MudTh>Project Status</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Project Object">@context.ProjectObject</MudTd>
+        <MudTd DataLabel="Project Plan">@context.ProjectPlan</MudTd>
+        <MudTd DataLabel="Project Status">@context.ProjectStatus</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OnEvaluateClick(context))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<ProjectDto>? projects;
+
+    protected async override Task OnInitializedAsync()
+    {
+        projects = await _projectService.GetProject();
+    }
+
+    private void OnEvaluateClick(ProjectDto project)
+    {
+       
+    }
+}

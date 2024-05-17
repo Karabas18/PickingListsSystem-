@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PickingListsSystem.DataAccess;
 
@@ -11,9 +12,11 @@ using PickingListsSystem.DataAccess;
 namespace PickingListsSystem.DataAccess.Migrations
 {
     [DbContext(typeof(PlsDbContext))]
-    partial class PlsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240516181545_WithoutUserInStatement_Try2")]
+    partial class WithoutUserInStatement_Try2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,13 +42,13 @@ namespace PickingListsSystem.DataAccess.Migrations
 
             modelBuilder.Entity("MaterialWork", b =>
                 {
-                    b.Property<int>("MaterialsId")
+                    b.Property<int>("MaterialId")
                         .HasColumnType("int");
 
                     b.Property<int>("WorkId")
                         .HasColumnType("int");
 
-                    b.HasKey("MaterialsId", "WorkId");
+                    b.HasKey("MaterialId", "WorkId");
 
                     b.HasIndex("WorkId");
 
@@ -492,21 +495,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.ToTable("ProjectStatement");
                 });
 
-            modelBuilder.Entity("ProjectWork", b =>
-                {
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectId", "WorkId");
-
-                    b.HasIndex("WorkId");
-
-                    b.ToTable("ProjectWork");
-                });
-
             modelBuilder.Entity("ProjectWorkGroup", b =>
                 {
                     b.Property<int>("ProjectsId")
@@ -587,7 +575,7 @@ namespace PickingListsSystem.DataAccess.Migrations
                 {
                     b.HasOne("PickingListsSystem.Entities.Material", null)
                         .WithMany()
-                        .HasForeignKey("MaterialsId")
+                        .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -693,21 +681,6 @@ namespace PickingListsSystem.DataAccess.Migrations
                     b.HasOne("PickingListsSystem.Entities.Statement", null)
                         .WithMany()
                         .HasForeignKey("StatementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProjectWork", b =>
-                {
-                    b.HasOne("PickingListsSystem.Entities.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PickingListsSystem.Entities.Work", null)
-                        .WithMany()
-                        .HasForeignKey("WorkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

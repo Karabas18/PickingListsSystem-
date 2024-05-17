@@ -10,11 +10,14 @@ namespace PickingListsSystem.Services
     {
         private readonly IMapper _mapper;
         private readonly IWorkRepository _workRepository;
+        //
+        private readonly IMaterialRepository _materialRepository;
 
-        public WorkService(IMapper mapper, IWorkRepository workRepository)
+        public WorkService(IMapper mapper, IWorkRepository workRepository, IMaterialRepository materialRepository)
         {
             _mapper = mapper;
             _workRepository = workRepository;
+            _materialRepository = materialRepository;
         }
 
         public async Task<int> AddWork(CreateWorkDto work)
@@ -47,6 +50,24 @@ namespace PickingListsSystem.Services
             var entitytoUpdate = _mapper.Map<CreateWorkDto, Work>(work);
             await _workRepository.UpdateWork(entitytoUpdate);
             return entitytoUpdate.Id;
+        }
+
+        public async Task AddMaterialsToWork(int workId, List<int> materialIds)
+        {
+            var work = await _workRepository.GetWorkID(workId);
+
+            if (work != null)//stop
+            {
+                foreach (var materialId in materialIds)
+                {
+                    var material = await _materialRepository.GetMaterialID(materialId);
+                    if (material != null)
+                    {
+                        work.Materials.Add(material);
+                    }
+                }
+                await _workRepository.UpdateWork(work);
+            }
         }
     }
 }

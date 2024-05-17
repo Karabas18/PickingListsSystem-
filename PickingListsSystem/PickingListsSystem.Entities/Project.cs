@@ -10,12 +10,14 @@
 
         public string? ProjectStatus { get; set; }
 
-        public WorkType WorkType { get; set; }
-
         public Customer Customer { get; set; }
 
-        public ICollection<WorkGroup> WorkGroup { get; set; }
+        public int CustomerId { get; set; }
 
-        public ICollection<Statement> Statement { get; set; }
+        public ICollection<WorkGroup> WorkGroup { get; set; } = new List<WorkGroup>();
+
+        public ICollection<Work> Work { get; set; } = new List<Work>();//try3
+
+        public ICollection<Statement> Statement { get; set; } = new List<Statement>();
     }
 }

@@ -13,9 +13,11 @@
         public int? WorkTypeId { get; set; }
         public WorkType WorkType { get; set; }
 
-        public ICollection<Material> Material { get; set; }
+        public ICollection<Material> Materials { get; set; } = new List<Material>();
+
+        public ICollection<Project> Project { get; set; } = new List<Project>();//try3
         //
-        public ICollection<Statement> Statement { get; set; }
+        public ICollection<Statement> Statement { get; set; } = new List<Statement>();
 
     }
 }

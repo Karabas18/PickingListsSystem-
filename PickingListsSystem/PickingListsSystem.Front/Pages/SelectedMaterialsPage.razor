@@ -54,8 +54,8 @@
 @if (selectedStatementMaterials != null)
 {
     <h4>Содержимое ведомостей</h4>
-    @*<MudTable Items="@selectedStatementMaterials" Hover="true" Breakpoint="Breakpoint.Sm">*@
-    <MudTable Items="@selectedStatementMaterials.Where(x => StatementIDonly.Contains(x.Id))" Hover="true" Breakpoint="Breakpoint.Sm">
+    <MudTable Items="@selectedStatementMaterials" Hover="true" Breakpoint="Breakpoint.Sm">
+    @*<MudTable Items="@selectedStatementMaterials.Where(x => StatementIDonly.Contains(x.Id))" Hover="true" Breakpoint="Breakpoint.Sm">*@
         <HeaderContent>
             <MudTh>Status</MudTh>
             <MudTh>Date</MudTh>

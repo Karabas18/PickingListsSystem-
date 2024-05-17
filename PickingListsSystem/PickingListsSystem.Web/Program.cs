@@ -75,6 +75,8 @@ builder.Services.AddAutoMapper(typeof(MaterialProfile));
 //
 builder.Services.AddAutoMapper(typeof(WorkProfile));
 //
+builder.Services.AddAutoMapper(typeof(ProjectProfile));
+//
 builder.Services.AddAutoMapper(typeof(StatementProfile));
 var app = builder.Build();
 

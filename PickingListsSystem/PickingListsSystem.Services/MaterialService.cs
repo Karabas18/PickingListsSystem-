@@ -31,7 +31,6 @@ namespace PickingListsSystem.Services
 
         public async Task<MaterialDto> GetMaterialID(int id)
         {
-            //return _mapper.Map<MaterialDto>(await _materialRepository.GetMaterialID(id));
             var material = await _materialRepository.GetMaterialID(id);
             return _mapper.Map<MaterialDto>(material);
         }
