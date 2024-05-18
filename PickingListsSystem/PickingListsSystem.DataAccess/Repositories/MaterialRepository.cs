@@ -22,6 +22,7 @@ namespace PickingListsSystem.DataAccess.Repositories
             var result = await _dbContext.Materials.FirstOrDefaultAsync(material => material.Id == id);
             return result;
         }
+        
 
         public async Task DeleteMaterial(int id)
         {

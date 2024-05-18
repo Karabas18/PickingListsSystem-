@@ -26,6 +26,6 @@
 
         public ICollection<Work> Work { get; set; } = new List<Work>();
 
-        public ICollection<Statement> Statement { get; set; } = new List<Statement>();
+        //public ICollection<Statement> Statement { get; set; } = new List<Statement>();
     }
 }

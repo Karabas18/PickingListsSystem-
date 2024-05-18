@@ -12,10 +12,10 @@
 
         //public User User { get; set; }
 
-        public ICollection<Project> Project { get; set; } = new List<Project>();
+        public ICollection<Project> Project { get; set; } = new List<Project>(); //Один-ко-многим
 
-        public ICollection<Material> Materials { get; set; } = new List<Material>();
+        //public ICollection<Material> Materials { get; set; } = new List<Material>();
         
-        public ICollection<Work> Work { get; set; } = new List<Work>();
+        //public ICollection<Work> Work { get; set; } = new List<Work>();
     }
 }

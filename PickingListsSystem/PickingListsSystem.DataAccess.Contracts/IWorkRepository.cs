@@ -11,5 +11,7 @@ namespace PickingListsSystem.DataAccess.Contracts
         Task<Work> UpdateWork(Work work);
         //
         Task AddMaterialsToWork(int workId, List<int> materialIds);
+        //
+        Task<Work> GetWorkIDSt(int id);
     }
 }

@@ -5,6 +5,6 @@ namespace PickingListsSystem.Dto.Project
     {
         public int Id { get; set; }
 
-        //public ICollection<WorkDto> Work { get; set; } = new List<WorkDto>();//try3
+        public ICollection<WorkDto> Work { get; set; } = new List<WorkDto>();//try3
     }
 }

@@ -9,5 +9,9 @@ namespace PickingListsSystem.DataAccess.Contracts
         Task DeleteProject(int id);
         Task<Project> AddProject(Project project);
         Task<Project> UpdateProject(Project project);
+        //
+        Task AddWorkToProject(int projectId, List<int> workIds);
+
+        Task<Project> GetProjectIDSt(int id);
     }
 }

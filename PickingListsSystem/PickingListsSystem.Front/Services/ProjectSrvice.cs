@@ -47,5 +47,10 @@ namespace PickingListsSystem.Front.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task AddWorkToProject(int projectId, List<int> workIds)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

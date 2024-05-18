@@ -8,9 +8,9 @@
 
         public string? WorkTypeTranscript { get; set; }
 
-        public ICollection<Work> Works { get; set; } = new List<Work>();
+        ////public ICollection<Work> Works { get; set; } = new List<Work>();
 
-        public ICollection<Project> Project { get; set; } = new List<Project>();
+        //public ICollection<Project> Project { get; set; } = new List<Project>();
 
     }
 }

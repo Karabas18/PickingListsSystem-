@@ -16,31 +16,31 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
-        public class AddMaterialsRequest
-        {
-            public int StatementId { get; set; }
-            public List<int> MaterialIds { get; set; }
-        }
+        //public class AddMaterialsRequest
+        //{
+        //    public int StatementId { get; set; }
+        //    public List<int> MaterialIds { get; set; }
+        //}
 
-        public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)
-        {
-            AddMaterialsRequest request = new AddMaterialsRequest() { StatementId = statementId, MaterialIds = materialIds };
-            var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
-            response.EnsureSuccessStatusCode();
-        }
-        //
-        public class AddWorkRequest
-        {
-            public int StatementId { get; set; }
-            public List<int> WorkIds { get; set; }
-        }
+        //public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)
+        //{
+        //    AddMaterialsRequest request = new AddMaterialsRequest() { StatementId = statementId, MaterialIds = materialIds };
+        //    var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
+        //    response.EnsureSuccessStatusCode();
+        //}
+        ////
+        //public class AddWorkRequest
+        //{
+        //    public int StatementId { get; set; }
+        //    public List<int> WorkIds { get; set; }
+        //}
 
-        public async Task AddWorkToStatement(int statementId, List<int> workIds)
-        {
-            AddWorkRequest request = new AddWorkRequest() { StatementId = statementId, WorkIds = workIds };
-            var response = await _httpClient.PostAsJsonAsync($"/Statement/addWork", request);
-            response.EnsureSuccessStatusCode();
-        }
+        //public async Task AddWorkToStatement(int statementId, List<int> workIds)
+        //{
+        //    AddWorkRequest request = new AddWorkRequest() { StatementId = statementId, WorkIds = workIds };
+        //    var response = await _httpClient.PostAsJsonAsync($"/Statement/addWork", request);
+        //    response.EnsureSuccessStatusCode();
+        //}
         //
         public async Task<int> AddStatement(CreateStatementDto statement)
         {
@@ -50,6 +50,15 @@ namespace PickingListsSystem.Front.Services
             // Возвращаем Id добавленной ведомости
             return await response.Content.ReadFromJsonAsync<int>();
         }
+
+        //
+
+        public Task AddToStatement(int statementId, int projectId, int? workId, List<int> materialIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        //
 
         public async Task DeleteStatement(int id)
         {

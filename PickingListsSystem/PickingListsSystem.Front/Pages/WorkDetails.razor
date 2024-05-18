@@ -1,0 +1,198 @@
+﻿@page "/WorkDetails/{workId:int}"
+@using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Services
+@using PickingListsSystem.Services.Contracts
+@using PickingListsSystem.Front.Services
+@inject IWorkService _workService
+@inject IMaterialService _materialService
+@inject MarkMaterialService _selectedMaterialsService
+
+@code {
+    [Parameter] public int workId { get; set; }
+    private WorkDto work;
+    private bool isLoading = true;
+    private string _searchString;
+    private string _sortLabel = "MaterialName";
+    private SortDirection _sortDirection = SortDirection.Ascending;
+
+    protected override async Task OnInitializedAsync()
+    {
+        work = await _workService.GetWorkID(workId); 
+        isLoading = false;
+    }
+
+    private Func<MaterialDto, bool> _quickFilter => material =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (material.MaterialName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialMark?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialUnit?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialGost?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRB?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRL?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRH?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialV?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialWeight?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialType?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        return false;
+    };
+
+    private List<MaterialDto> _sortBy(IEnumerable<MaterialDto> items)
+    {
+        return (_sortLabel switch
+        {
+            "MaterialName" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialName)
+                : items.OrderByDescending(m => m.MaterialName),
+            "MaterialMark" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialMark)
+                : items.OrderByDescending(m => m.MaterialMark),
+            "MaterialUnit" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialUnit)
+                : items.OrderByDescending(m => m.MaterialUnit),
+            "MaterialGost" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialGost)
+                : items.OrderByDescending(m => m.MaterialGost),
+            "MaterialRB" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialRB)
+                : items.OrderByDescending(m => m.MaterialRB),
+            "MaterialRL" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialRL)
+                : items.OrderByDescending(m => m.MaterialRL),
+            "MaterialRH" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialRH)
+                : items.OrderByDescending(m => m.MaterialRH),
+            "MaterialV" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialV)
+                : items.OrderByDescending(m => m.MaterialV),
+            "MaterialWeight" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialWeight)
+                : items.OrderByDescending(m => m.MaterialWeight),
+            "MaterialType" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(m => m.MaterialType)
+                : items.OrderByDescending(m => m.MaterialType),
+            _ => items.OrderBy(m => m.MaterialName),
+        }).ToList();
+    }
+
+    private void ChangeSortDirection(string column)
+    {
+        if (_sortLabel == column)
+        {
+            _sortDirection = _sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+        }
+        else
+        {
+            _sortLabel = column;
+            _sortDirection = SortDirection.Ascending;
+        }
+    }
+
+    private string SortIndicator(string column)
+    {
+        if (_sortLabel == column)
+        {
+            return _sortDirection == SortDirection.Ascending ? "▲" : "▼";
+        }
+
+        return string.Empty;
+    }
+
+    private async Task OnEvaluateClick(int id)
+    {
+        var selectedMaterial = await _materialService.GetMaterialID(id);
+        await MarkMaterialService.AddSelectedMaterial(selectedMaterial);
+    }
+}
+
+<PageTitle>Work Details</PageTitle>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <MudCard>
+        <MudCardContent>
+            <h3>@work.WorkCode</h3>
+            <p><strong>Описание:</strong> @work.WorkDescription</p>
+        </MudCardContent>
+    </MudCard>
+
+    <MudTable Items="@_sortBy(work.Materials).Where(_quickFilter)" Hover="true" Breakpoint="Breakpoint.Sm">
+        <HeaderContent>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialName"))">
+                Name @SortIndicator("MaterialName")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialMark"))">
+                Mark @SortIndicator("MaterialMark")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialUnit"))">
+                Unit @SortIndicator("MaterialUnit")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialGost"))">
+                Gost @SortIndicator("MaterialGost")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRB"))">
+                RB @SortIndicator("MaterialRB")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRL"))">
+                RL @SortIndicator("MaterialRL")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRH"))">
+                RH @SortIndicator("MaterialRH")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialV"))">
+                V @SortIndicator("MaterialV")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialWeight"))">
+                Weight @SortIndicator("MaterialWeight")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialType"))">
+                Type @SortIndicator("MaterialType")
+            </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.MaterialName</MudTd>
+            <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
+            <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
+            <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
+            <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
+            <MudTd DataLabel="RL">@context.MaterialRL</MudTd>
+            <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
+            <MudTd DataLabel="V">@context.MaterialV</MudTd>
+            <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
+            <MudTd DataLabel="Type">@context.MaterialType</MudTd>
+            <MudTd DataLabel="Actions">
+                <MudButton OnClick="@(() => OnEvaluateClick(@context.Id))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+     <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-4 mb-4"></MudTextField>
+
+}

@@ -51,5 +51,18 @@ namespace PickingListsSystem.Web.Controllers
             await _projectService.DeleteProject(id);
         }
 
+        public class AddProjectRequest
+        {
+            public int ProjectId { get; set; }
+            public List<int> WorkIds { get; set; } 
+        }
+
+        [HttpPost("addWork")]
+        public async Task<IActionResult> AddWorkToProject([FromBody] AddProjectRequest request)
+        {
+            await _projectService.AddWorkToProject(request.ProjectId, request.WorkIds);
+            return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        }
+
     }
 }

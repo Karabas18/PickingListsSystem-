@@ -11,16 +11,41 @@ namespace PickingListsSystem.DataAccess.Repositories
         {
 
         }
+        //public async Task<List<Project>> GetProject()
+        //{
+        //    var result = await _dbContext.Project.ToListAsync();
+        //    return result;
+        //}
+
         public async Task<List<Project>> GetProject()
         {
-            var result = await _dbContext.Project.ToListAsync();
+            var result = await _dbContext.Project
+                                          .Include(project => project.Work).ThenInclude(work => work.Materials)
+                                          .ToListAsync();
             return result;
         }
 
+        //public async Task<Project> GetProjectID(int id)
+        //{
+        //    var result = await _dbContext.Project.FirstOrDefaultAsync(project => project.Id == id);
+        //    return result;
+        //}
+
         public async Task<Project> GetProjectID(int id)
         {
-            var result = await _dbContext.Project.FirstOrDefaultAsync(project => project.Id == id);
+            var result = await _dbContext.Project
+                                          .Include(project => project.Work).ThenInclude(work => work.Materials)
+                                          .FirstOrDefaultAsync(project => project.Id == id);
             return result;
+        }
+
+        public async Task<Project> GetProjectIDSt(int id)
+        {
+            return await _dbContext.Project
+                           //.AsNoTracking()
+                           //.Include(project => project.Work)
+                           //    .ThenInclude(work => work.Materials)
+                           .FirstOrDefaultAsync(project => project.Id == id);
         }
 
         public async Task DeleteProject(int id)
@@ -46,6 +71,24 @@ namespace PickingListsSystem.DataAccess.Repositories
             _dbContext.Project.Update(project);
             await _dbContext.SaveChangesAsync();
             return project;
+        }
+
+        public async Task AddWorkToProject(int projectId, List<int> workIds)
+        {
+            var project = await _dbContext.Project.FindAsync(projectId);
+
+            if (project != null)
+            {
+                foreach (var workId in workIds)
+                {
+                    var work = await _dbContext.Work.FindAsync(workId);
+                    if (work != null)
+                    {
+                        project.Work.Add(work);
+                    }
+                }
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 }

@@ -9,5 +9,6 @@ namespace PickingListsSystem.DataAccess.Contracts
         Task DeleteMaterial(int id);
         Task<Material> AddMaterial(Material material);
         Task<Material> UpdateMaterial(Material material);
+
     }
 }

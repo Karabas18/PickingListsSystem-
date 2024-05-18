@@ -2,35 +2,115 @@
 @using PickingListsSystem.Dto.Project
 @using PickingListsSystem.Services.Contracts
 @inject IProjectService _projectService
-<PageTitle>Projects</PageTitle>
+@inject NavigationManager Navigation
 
-<MudTable Items="@projects" Hover="true" Breakpoint="Breakpoint.Sm">
+<PageTitle>Проекты</PageTitle>
+
+<MudTable Items="_sortBy(projects)" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter">
     <HeaderContent>
-        <MudTh>Project Object</MudTh>
-        <MudTh>Project Plan</MudTh>
-        <MudTh>Project Status</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("ProjectObject"))">
+            Объект проекта @SortIndicator("ProjectObject")
+        </MudTh>
+        <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("ProjectPlan"))">
+            План проекта @SortIndicator("ProjectPlan")
+        </MudTh>
+        <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("ProjectStatus"))">
+            Статус проекта @SortIndicator("ProjectStatus")
+        </MudTh>
+        <MudTh>Действия</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Project Object">@context.ProjectObject</MudTd>
-        <MudTd DataLabel="Project Plan">@context.ProjectPlan</MudTd>
-        <MudTd DataLabel="Project Status">@context.ProjectStatus</MudTd>
-        <MudTd DataLabel="Actions">
-            <MudButton OnClick="@(() => OnEvaluateClick(context))" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton>
+        <MudTd DataLabel="Объект проекта">@context.ProjectObject</MudTd>
+        <MudTd DataLabel="План проекта">@context.ProjectPlan</MudTd>
+        <MudTd DataLabel="Статус проекта">@context.ProjectStatus</MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnEvaluateClick(context))" Variant="Variant.Filled" Color="Color.Primary">Выбрать</MudButton>
         </MudTd>
     </RowTemplate>
 </MudTable>
 
+<div class="d-flex flex-wrap mt-4">
+    <MudTextField @bind-Value="_searchString" Placeholder="Поиск" Adornment="Adornment.Start" Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+</div>
+
 @code {
     private List<ProjectDto>? projects;
+    private string _searchString;
 
-    protected async override Task OnInitializedAsync()
+    private string _sortLabel = "ProjectObject";
+    private SortDirection _sortDirection = SortDirection.None;
+
+    protected override async Task OnInitializedAsync()
     {
         projects = await _projectService.GetProject();
+        projects = _sortBy(projects).ToList();
     }
 
     private void OnEvaluateClick(ProjectDto project)
     {
-       
+        Navigation.NavigateTo($"/ProjectDetails/{project.Id}");
+    }
+
+    // Быстрая фильтрация
+    private Func<ProjectDto, bool> _quickFilter => project =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (project.ProjectObject?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (project.ProjectPlan?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (project.ProjectStatus?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        return false;
+    };
+
+    // Кастомная сортировка
+    private IOrderedEnumerable<ProjectDto> _sortBy(IEnumerable<ProjectDto> items)
+    {
+        return _sortLabel switch
+        {
+            "ProjectObject" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(p => p.ProjectObject)
+                : items.OrderByDescending(p => p.ProjectObject),
+            "ProjectPlan" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(p => p.ProjectPlan)
+                : items.OrderByDescending(p => p.ProjectPlan),
+            "ProjectStatus" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(p => p.ProjectStatus)
+                : items.OrderByDescending(p => p.ProjectStatus),
+            _ => items.OrderBy(p => p.ProjectObject),
+        };
+    }
+
+    private void ChangeSortDirection(string column)
+    {
+        if (_sortLabel == column)
+        {
+            _sortDirection = _sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+        }
+        else
+        {
+            _sortLabel = column;
+            _sortDirection = SortDirection.Ascending;
+        }
+
+        // Запуск перерисовки и сортировки
+        projects = _sortBy(projects).ToList();
+    }
+
+    private string SortIndicator(string column)
+    {
+        if (_sortLabel == column)
+        {
+            return _sortDirection == SortDirection.Ascending ? "▲" : "▼";
+        }
+
+        return string.Empty;
     }
 }

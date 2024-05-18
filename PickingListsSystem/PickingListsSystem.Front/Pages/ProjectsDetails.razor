@@ -1,0 +1,123 @@
+﻿@page "/ProjectDetails/{id:int}"
+@using PickingListsSystem.Dto.Project
+@using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Services.Contracts
+@inject IProjectService _projectService
+@inject NavigationManager Navigation
+@code {
+    [Parameter] public int id { get; set; }
+    private ProjectDto project;
+    private bool isLoading = true;
+
+    private string _searchString;
+    private string _sortLabel = "WorkCode";
+    private SortDirection _sortDirection = SortDirection.None;
+
+    protected override async Task OnInitializedAsync()
+    {
+        project = await _projectService.GetProjectID(id);
+        isLoading = false;
+    }
+
+    private void OnWorkSelectClick(WorkDto work)
+    {
+        Navigation.NavigateTo($"/WorkDetails/{work.Id}");
+    }
+
+    // Быстрая фильтрация
+    private Func<WorkDto, bool> _quickFilter => work =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (work.WorkCode?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (work.WorkDescription?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        return false;
+    };
+
+    // Кастомная сортировка
+    private IOrderedEnumerable<WorkDto> _sortBy(IEnumerable<WorkDto> items)
+    {
+        return _sortLabel switch
+        {
+            "WorkCode" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(w => w.WorkCode)
+                : items.OrderByDescending(w => w.WorkCode),
+            "WorkDescription" => _sortDirection == SortDirection.Ascending
+                ? items.OrderBy(w => w.WorkDescription)
+                : items.OrderByDescending(w => w.WorkDescription),
+            _ => items.OrderBy(w => w.WorkCode),
+        };
+    }
+
+    private void ChangeSortDirection(string column)
+    {
+        if (_sortLabel == column)
+        {
+            _sortDirection = _sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+        }
+        else
+        {
+            _sortLabel = column;
+            _sortDirection = SortDirection.Ascending;
+        }
+
+        // Запуск перерисовки и сортировки
+        project.Work = _sortBy(project.Work).ToList();
+    }
+
+    private string SortIndicator(string column)
+    {
+        if (_sortLabel == column)
+        {
+            return _sortDirection == SortDirection.Ascending ? "▲" : "▼";
+        }
+
+        return string.Empty;
+    }
+}
+
+<PageTitle>Project Details</PageTitle>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <MudCard>
+        <MudCardContent>
+            <h3>@project.ProjectObject</h3>
+            <p><strong>Plan:</strong> @project.ProjectPlan</p>
+            <p><strong>Status:</strong> @project.ProjectStatus</p>
+        </MudCardContent>
+    </MudCard>
+    
+
+    <MudTable Items="_sortBy(project.Work)" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter">
+        <HeaderContent>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("WorkCode"))">
+                Work Code @SortIndicator("WorkCode")
+            </MudTh>
+            <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("WorkDescription"))">
+                Description @SortIndicator("WorkDescription")
+            </MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Work Code">@context.WorkCode</MudTd>
+            <MudTd DataLabel="Description">@context.WorkDescription</MudTd>
+            <MudTd DataLabel="Actions">
+                <MudButton OnClick="@(() => OnWorkSelectClick(context))" Variant="Variant.Filled" Color="Color.Primary">Выбрать</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <div class="d-flex flex-wrap mt-4">
+        <MudTextField @bind-Value="_searchString" Placeholder="Поиск" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </div>
+}

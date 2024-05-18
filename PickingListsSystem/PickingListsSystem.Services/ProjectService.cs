@@ -10,11 +10,14 @@ namespace PickingListsSystem.Services
     {
         private readonly IMapper _mapper;
         private readonly IProjectRepository _projectRepository;
+        //
+        private readonly IWorkRepository _workRepository;
 
-        public ProjectService(IMapper mapper, IProjectRepository projectRepository)
+        public ProjectService(IMapper mapper, IProjectRepository projectRepository, IWorkRepository workRepository)
         {
             _mapper = mapper;
             _projectRepository = projectRepository;
+            _workRepository = workRepository;
         }
 
         public async Task<int> AddProject(CreateProjectDto project)
@@ -46,6 +49,24 @@ namespace PickingListsSystem.Services
             var entitytoUpdate = _mapper.Map<CreateProjectDto, Project>(project);
             await _projectRepository.UpdateProject(entitytoUpdate);
             return entitytoUpdate.Id;
+        }
+
+        public async Task AddWorkToProject(int projectId, List<int> workIds)
+        {
+            var project = await _projectRepository.GetProjectID(projectId);
+
+            if (project != null)
+            {
+                foreach (var workId in workIds)
+                {
+                    var work = await _workRepository.GetWorkID(workId);
+                    if (work != null)
+                    {
+                        project.Work.Add(work);
+                    }
+                }
+                await _projectRepository.UpdateProject(project);
+            }
         }
     }
 }

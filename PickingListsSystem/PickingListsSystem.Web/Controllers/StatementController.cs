@@ -51,30 +51,57 @@ namespace PickingListsSystem.Web.Controllers
             await _statementService.DeleteStatement(id);
         }
 
-        public class AddMaterialsRequest
+        public class AddToStatementRequest
         {
             public int StatementId { get; set; }
+            public int ProjectId { get; set; }
+            public int? WorkId { get; set; }
             public List<int> MaterialIds { get; set; }
         }
 
-        [HttpPost("addMaterials")]
-        public async Task<IActionResult> AddMaterialsToStatement([FromBody] AddMaterialsRequest request)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddToStatement([FromBody] AddToStatementRequest request)
         {
-            await _statementService.AddMaterialsToStatement(request.StatementId, request.MaterialIds);
-            return Ok(); // Возвращаем 200 OK в случае успешного добавления
-        }
-        ////
-        public class AddWorkRequest
-        {
-            public int StatementId { get; set; }
-            public List<int> WorkIds { get; set; }
+            try
+            {
+                await _statementService.AddToStatement(request.StatementId, request.ProjectId, request.WorkId, request.MaterialIds);
+                return Ok("Statement updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while adding to statement: {ex.Message}");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
-        [HttpPost("addWork")]
-        public async Task<IActionResult> AddWorkToStatement([FromBody] AddWorkRequest request)
-        {
-            await _statementService.AddWorkToStatement(request.StatementId, request.WorkIds);
-            return Ok(); // Возвращаем 200 OK в случае успешного добавления
-        }
+        //public class AddMaterialsRequest
+        //{
+        //    public int StatementId { get; set; }
+        //    public List<int> MaterialIds { get; set; }
+        //}
+
+        //[HttpPost("addMaterials")]
+        //public async Task<IActionResult> AddMaterialsToStatement([FromBody] AddMaterialsRequest request)
+        //{
+        //    await _statementService.AddMaterialsToStatement(request.StatementId, request.MaterialIds);
+        //    return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        //}
+        //////
+        //public class AddWorkRequest
+        //{
+        //    public int StatementId { get; set; }
+        //    public List<int> WorkIds { get; set; }
+        //}
+
+        //[HttpPost("addWork")]
+        //public async Task<IActionResult> AddWorkToStatement([FromBody] AddWorkRequest request)
+        //{
+        //    await _statementService.AddWorkToStatement(request.StatementId, request.WorkIds);
+        //    return Ok(); // Возвращаем 200 OK в случае успешного добавления
+        //}
     }
 }

@@ -38,6 +38,14 @@ namespace PickingListsSystem.DataAccess.Repositories
             return result;
         }
 
+        public async Task<Work> GetWorkIDSt(int id)
+        {
+            return await _dbContext.Work
+                           //.AsNoTracking()
+                           //.Include(work => work.Materials)
+                           .FirstOrDefaultAsync(work => work.Id == id);
+        }
+
         public async Task DeleteWork(int id)
         {
             var result = await _dbContext.Work.FindAsync(id);

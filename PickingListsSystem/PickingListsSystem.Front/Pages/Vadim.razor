@@ -8,18 +8,38 @@
 
 <PageTitle>Materials</PageTitle>
 
-<MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter" Sort="@_sortBy">
+<MudTable Items="_sortBy(materials)" Hover="true" Breakpoint="Breakpoint.Sm" Filter="@_quickFilter">
     <HeaderContent>
-        <MudTh Sortable="true" SortDirection="@_sortNameDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Name", direction))">Name</MudTh>
-        <MudTh Sortable="true" SortDirection="@_sortMarkDirection" SortChanged="@((SortDirection direction) => ChangeSortDirection("Mark", direction))">Mark</MudTh>
-        <MudTh>Unit</MudTh>
-        <MudTh>Gost</MudTh>
-        <MudTh>RB</MudTh>
-        <MudTh>Rl</MudTh>
-        <MudTh>RH</MudTh>
-        <MudTh>V</MudTh>
-        <MudTh>Weight</MudTh>
-        <MudTh>Type</MudTh>
+        <MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialName"))">
+    Name @SortIndicator("MaterialName")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialMark"))">
+    Mark @SortIndicator("MaterialMark")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialUnit"))">
+    Unit @SortIndicator("MaterialUnit")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialGost"))">
+    Gost @SortIndicator("MaterialGost")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRB"))">
+    RB @SortIndicator("MaterialRB")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRL"))">
+    Rl @SortIndicator("MaterialRL")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialRH"))">
+    RH @SortIndicator("MaterialRH")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialV"))">
+    V @SortIndicator("MaterialV")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialWeight"))">
+    Weight @SortIndicator("MaterialWeight")
+</MudTh>
+<MudTh Sortable="true" onclick="@(() => ChangeSortDirection("MaterialType"))">
+    Type @SortIndicator("MaterialType")
+</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -48,12 +68,13 @@
     private List<MaterialDto>? materials;
     private string _searchString;
 
-    private SortDirection _sortNameDirection = SortDirection.None;
-    private SortDirection _sortMarkDirection = SortDirection.None;
+    private string _sortLabel = "MaterialName";
+    private SortDirection _sortDirection = SortDirection.None;
 
     protected override async Task OnInitializedAsync()
     {
         materials = await _materialService.GetMaterials();
+        materials = _sortBy(materials).ToList();
     }
 
     private async Task OnEvaluateClick(int id)
@@ -74,38 +95,95 @@
         if (material.MaterialMark?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
             return true;
 
-        // Add more fields if needed
+        if (material.MaterialUnit?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialGost?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRB?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRL?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialRH?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialV?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialWeight?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (material.MaterialType?.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
 
         return false;
     };
 
     // Custom sorting
-    private Func<MaterialDto, object> _sortBy => material =>
+    private IOrderedEnumerable<MaterialDto> _sortBy(IEnumerable<MaterialDto> items)
     {
-        if (_sortNameDirection == SortDirection.Ascending)
-            return material.MaterialName;
-        else if (_sortNameDirection == SortDirection.Descending)
-            return -material.MaterialName.CompareTo("");
-
-        if (_sortMarkDirection == SortDirection.Ascending)
-            return material.MaterialMark;
-        else if (_sortMarkDirection == SortDirection.Descending)
-            return -material.MaterialMark;
-
-        return material.MaterialName; // Default sorting by name
+    return _sortLabel switch
+    {
+        "MaterialName" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialName)
+            : items.OrderByDescending(m => m.MaterialName),
+        "MaterialMark" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialMark)
+            : items.OrderByDescending(m => m.MaterialMark),
+        "MaterialUnit" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialUnit)
+            : items.OrderByDescending(m => m.MaterialUnit),
+        "MaterialGost" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialGost)
+            : items.OrderByDescending(m => m.MaterialGost),
+        "MaterialRB" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialRB)
+            : items.OrderByDescending(m => m.MaterialRB),
+        "MaterialRL" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialRL)
+            : items.OrderByDescending(m => m.MaterialRL),
+        "MaterialRH" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialRH)
+            : items.OrderByDescending(m => m.MaterialRH),
+        "MaterialV" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialV)
+            : items.OrderByDescending(m => m.MaterialV),
+        "MaterialWeight" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialWeight)
+            : items.OrderByDescending(m => m.MaterialWeight),
+        "MaterialType" => _sortDirection == SortDirection.Ascending
+            ? items.OrderBy(m => m.MaterialType)
+            : items.OrderByDescending(m => m.MaterialType),
+        _ => items.OrderBy(m => m.MaterialName),
     };
+    }
 
-    private void ChangeSortDirection(string column, SortDirection direction)
+    private void ChangeSortDirection(string column)
+{
+    if (_sortLabel == column)
     {
-        if (column == "Name")
+        _sortDirection = _sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+    }
+    else
+    {
+        _sortLabel = column;
+        _sortDirection = SortDirection.Ascending;
+    }
+
+    // Trigger re-rendering and sorting
+    materials = _sortBy(materials).ToList();
+}
+
+    private string SortIndicator(string column)
+    {
+        if (_sortLabel == column)
         {
-            _sortNameDirection = direction;
-            _sortMarkDirection = SortDirection.None; // Reset Mark sort direction
+            return _sortDirection == SortDirection.Ascending ? "▲" : "▼";
         }
-        else if (column == "Mark")
-        {
-            _sortMarkDirection = direction;
-            _sortNameDirection = SortDirection.None; // Reset Name sort direction
-        }
+
+        return string.Empty;
     }
 }
