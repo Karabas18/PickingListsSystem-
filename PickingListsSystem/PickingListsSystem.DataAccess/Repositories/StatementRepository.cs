@@ -40,36 +40,6 @@ namespace PickingListsSystem.DataAccess.Repositories
             }
         }
 
-        //public async Task DeleteStatement(int id)
-        //{
-        //    var statement = await _dbContext.Statement.FindAsync(id);
-        //    // Удалите записи в дочерней таблице, которые ссылаются на удаляемую запись
-        //    if (statement != null)
-        //    {
-        //        // Удалить материалы, связанные с работами
-        //        foreach (var work in statement.Project.Work)
-        //        {
-        //            _dbContext.Materials.RemoveRange(work.Materials);
-        //        }
-
-        //        // Удалить работы, связанные с проектом
-        //        _dbContext.Work.RemoveRange(statement.Project.Work);
-
-        //        // Удалить проект, если у него нет других связанных ведомостей
-        //        var relatedStatements = await _dbContext.Statement
-        //                                                .Where(s => s.ProjectId == statement.ProjectId && s.Id != id)
-        //                                                .ToListAsync();
-        //        if (!relatedStatements.Any())
-        //        {
-        //            _dbContext.Project.Remove(statement.Project);
-        //        }
-
-        //        // Удалить саму ведомость
-        //        _dbContext.Statement.Remove(statement);
-
-        //        await _dbContext.SaveChangesAsync();
-        //    }
-        //}
 
         public async Task<Statement> AddStatement(Statement statement)
         {

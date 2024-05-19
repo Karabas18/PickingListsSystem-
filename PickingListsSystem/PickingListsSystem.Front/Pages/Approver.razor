@@ -1,31 +1,113 @@
 ﻿@page "/Approver"
-@using Microsoft.AspNetCore.Components.Rendering
-@using PickingListsSystem.Dto.Materials
+@using PickingListsSystem.Dto.Project
+@using PickingListsSystem.Dto.Statement
+@using PickingListsSystem.Dto.Work
 @using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts
-@inject IMaterialService MaterialService
+@inject IStatementService _statementService
+@inject NavigationManager Navigation
+@inject SelectedItemsService SelectedItemsService
 
-<PageTitle>Index</PageTitle>
-<h3>Время говнокода x2!!!</h3>
-<MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
-    <MudTabPanel Text="One" OnClick="@ShowSelectedMaterialsPage"/>
-    <MudTabPanel Text="Two"/>
-    <MudTabPanel Text="Three"/>
-</MudTabs>
+<PageTitle>Ведомости</PageTitle>
 
-<div>
-    @selectedMaterialsPageContent
+<div style="margin-bottom: 20px;">
+    <MudButton OnClick="@RefreshStatements" Variant="Variant.Filled" Color="Color.Primary">Обновить</MudButton>
 </div>
 
-@code {
-    private RenderFragment selectedMaterialsPageContent;
-
-    private void ShowSelectedMaterialsPage()
+@if (isLoading)
+{
+    <p>Загрузка...</p>
+}
+else
+{
+    @foreach (var statement in statements)
     {
-        selectedMaterialsPageContent = builder =>
-        {
-            builder.OpenComponent(0, typeof(SelectedMaterialsPage));
-            builder.CloseComponent();
-        };
+         <MudCard class="mb-4">
+            <MudCardContent>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3>Ведомость</h3>
+                        <p><strong>Статус:</strong> @statement.StatementStatus</p>
+                        <p><strong>Дата:</strong> @statement.StatementDate?.ToString("dd-MM-yyyy")</p>
+                    </div>
+                    <div>
+                        <MudButton OnClick="() => ApproveStatement(statement)" Color="Color.Success" Variant="Variant.Filled" Class="mr-2">Одобрить</MudButton>
+                        <MudButton OnClick="() => RejectStatement(statement)" Color="Color.Error" Variant="Variant.Filled">Отклонить</MudButton>
+                    </div>
+                </div>
+            </MudCardContent>
+        </MudCard>
+
+        <MudCard class="mt-4 mb-4">
+            <MudCardContent>
+                <h3>Проект</h3>
+                <p><strong>Объект:</strong> @statement.Project.ProjectObject</p>
+                <p><strong>План:</strong> @statement.Project.ProjectPlan</p>
+                <p><strong>Статус:</strong> @statement.Project.ProjectStatus</p>
+            </MudCardContent>
+        </MudCard>
+
+        <MudCard class="mt-4 mb-4">
+            <MudCardContent>
+                <h3>Работа</h3>
+                <p><strong>Код работы:</strong> @statement.Work.WorkCode</p>
+                <p><strong>Описание:</strong> @statement.Work.WorkDescription</p>
+            </MudCardContent>
+        </MudCard>
+
+        <MudTable Items="statement.Materials" Hover="true" Breakpoint="Breakpoint.Sm" Class="mb-4">
+            <HeaderContent>
+                <MudTh>Марка материала</MudTh>
+                <MudTh>Название</MudTh>
+                <MudTh>Единица измерения</MudTh>
+                <MudTh>ГОСТ</MudTh>
+                <MudTh>Вес</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Марка материала">@context.MaterialMark</MudTd>
+                <MudTd DataLabel="Название">@context.MaterialName</MudTd>
+                <MudTd DataLabel="Единица измерения">@context.MaterialUnit</MudTd>
+                <MudTd DataLabel="ГОСТ">@context.MaterialGost</MudTd>
+                <MudTd DataLabel="Вес">@context.MaterialWeight</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+
+@code {
+    private List<StatementDto> statements;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allStatements = await _statementService.GetStatement();
+        statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
+        isLoading = false;
+    }
+
+    private async Task ApproveStatement(StatementDto statement)
+    {
+        // Устанавливаем новый статус ведомости
+        statement.StatementStatus = "Утвержден";
+    
+        // Вызываем метод обновления ведомости через HTTP запрос
+        await _statementService.UpdateStatement(statement);
+        //await RefreshStatements();
+    }
+
+     private async Task RejectStatement(StatementDto statement)
+    {
+        // Вызываем метод удаления ведомости через HTTP запрос
+        await _statementService.DeleteStatement(statement.Id);
+        
+        // После удаления ведомости обновляем список
+        await RefreshStatements();
+    }
+
+    private async Task RefreshStatements()
+    {
+        // Обновляем список ведомостей после удаления
+        var allStatements = await _statementService.GetStatement();
+        statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
     }
 }
