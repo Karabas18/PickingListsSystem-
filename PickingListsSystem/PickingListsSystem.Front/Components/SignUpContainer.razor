@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+<div class="container">
+    <div class="frontpage-image">
+        <img src="images/back.jpg" alt="Background Image" />
+    </div>
+    <div class="signup-form">
+        <EditForm EditContext="@EditContext">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h1" Class="sign-up-header">@HeaderText</MudText>
+                </MudItem>
+                @if (ShowLoginLink)
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.body1">Already have an account? <MudLink ForceLoad Href="/Login" Underline="Underline.Always">Log in</MudLink></MudText>
+                    </MudItem>
+                }
+                @ChildContent
+            </MudGrid>
+            <ValidationSummary style="display:none" />
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public string? HeaderText { get; set; }
+
+    [Parameter]
+    public bool ShowLoginLink { get; set; }
+}
+
+<style>
+    .container {
+        height: 100vh;
+        width: 100%;
+        margin-left: 0px;
+        padding: 0px;
+    }
+
+    .frontpage-image {
+        flex: 0 0 70%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .frontpage-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .signup-form {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        margin-right: 60px;
+    }
+
+    .sign-up-header {
+        margin-bottom: 1rem;
+    }
+
+   @@media screen and (max-width: 800px) {
+        .frontpage-image {
+            display: none;
+        }
+
+        .signup-form {
+            width: 100%;
+        }
+    }
+</style>

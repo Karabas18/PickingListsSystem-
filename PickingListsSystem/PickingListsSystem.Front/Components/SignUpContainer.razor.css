@@ -1,0 +1,44 @@
+.sign-up-header {
+    font-family: "MaerskText", arial, verdana, sans-serif;
+    font-style: normal;
+}
+
+.signup-form {
+    background-color: white;
+    padding: 96px 24px;
+    width: 40%;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+
+.logo-white {
+    margin-top: 72px;
+    margin-left: 84px;
+    position: absolute
+}
+
+.logo-dark {
+    display: none;
+    height: 32px;
+}
+
+@media (max-width: 800px) {
+    .signup-form {
+        padding: 32px 24px;
+        width: 100%;
+    }
+
+    .logo-white {
+        display: none;
+    }
+
+    .logo-dark {
+        object-position: center;
+        object-fit: scale-down;
+        display: inherit;
+        max-width: 262px;
+        margin: auto auto 32px;
+    }
+}

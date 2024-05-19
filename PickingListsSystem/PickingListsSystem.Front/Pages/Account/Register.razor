@@ -1,0 +1,161 @@
+﻿@page "/register"
+
+@using MaerskBroker.Insights.Shared
+@using Microsoft.AspNetCore.Components.Forms;
+@using PickingListsSystem.Dto.User
+@using PickingListsSystem.Front.Components
+
+@inject HttpClient _httpClient;
+
+<SignUpContainer EditContext="@_formContext" HeaderText="@_header" ShowLoginLink="@(!_isSuccessfullySaved)">
+    @if (!_isSuccessfullySaved)
+    {
+        <MudItem xs="12" Class="mt-7">
+            <MudText>Username</MudText>
+            <MudTextField OnlyValidateIfDirty="true"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_userForm.Username"
+                          For="@(() => _userForm.Username)"
+                          Placeholder="What is your Username?" />
+        </MudItem>
+        <MudItem xs="12" Class="mt-1">
+            <MudText>FullName</MudText>
+            <MudTextField OnlyValidateIfDirty="true"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_userForm.FullName"
+                          For="@(() => _userForm.FullName)"
+                          Placeholder="What is your FullName?" />
+        </MudItem>
+        <MudItem xs="12" Class="mt-1">
+            <MudText>E-mail</MudText>
+            <MudTextField OnlyValidateIfDirty="true"
+                          InputType="InputType.Email"
+                          OnBlur="VerifyInput"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_userForm.Email"
+                          For="@(() => _userForm.Email)"
+                          Placeholder="What is your work mail address?" />
+        </MudItem>
+
+        <MudItem xs="12" Class="mt-1">
+            <MudText>Password</MudText>
+            <MudTextField OnlyValidateIfDirty="true"
+                          InputType="InputType.Password"
+                          OnBlur="VerifyInput"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_userForm.Password"
+                          For="@(() => _userForm.Password)"
+                          Placeholder="What is your Password?" />
+        </MudItem>
+
+        <MudItem xs="12" Class="mt-1">
+            <MudText>ConfirmPassword</MudText>
+            <MudTextField OnlyValidateIfDirty="true"
+                          InputType="InputType.Password"
+                          OnBlur="VerifyInput"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_userForm.ConfirmPassword"
+                          For="@(() => _userForm.ConfirmPassword)"
+                          Placeholder="Confirm password" />
+        </MudItem>
+
+        <MudItem xs="12" Class="mt-1">
+            <MudToggleIconButton Toggled="_isAgreed"
+                                 Size="Size.Medium"
+                                 Class="pa-0 rounded-0 mt-2"
+                                 Icon="@PLSIcons.Blue.SignUpCheckboxUnchecked"
+                                 ToggledIcon="@PLSIcons.Blue.SignUpCheckboxChecked"
+                                 ToggledChanged="Toggle" />
+            <MudButton Variant="Variant.Text" OnClick="@(Toggle)">
+                I agree to the<MudLink Href="#" Underline="Underline.Always" Class="ml-1">terms and conditions</MudLink>
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" DisableElevation="true" Disabled="!_isCreateButtonEnabled" OnClick="@CreateInitialAccount">Зарегестрироваться</MudButton>
+        </MudItem>
+    }
+    else
+    {
+        <MudItem xs="12">
+            <MudText Typo="Typo.body1">Please check your mail. <span class="blue-text">We have sent you a verification link.</span></MudText>
+        </MudItem>
+    }
+</SignUpContainer>
+
+@code {
+    private readonly RegisterRequest _userForm = new();
+    private EditContext? _formContext;
+    private ValidationMessageStore? _messageStore;
+
+    private string _header = "Регистрация";
+
+    private bool _isAgreed;
+    private bool _isSuccessfullySaved;
+    private bool _isValidated;
+    private bool _isCreateButtonEnabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _formContext = new EditContext(_userForm);
+        _messageStore = new ValidationMessageStore(_formContext);
+    }
+
+
+    private void Toggle()
+    {
+        _isAgreed = !_isAgreed;
+        UpdateCreateButtonState();
+    }
+
+    private void UpdateCreateButtonState()
+    {
+        _isCreateButtonEnabled = _isAgreed && _isValidated;
+    }
+
+    private async Task CreateInitialAccount()
+    {
+        var formIsValid = _formContext != null && _formContext.Validate();
+        if (formIsValid)
+        {
+            var fieldEmailIdentifier = _formContext!.Field("Email");
+            if (string.IsNullOrEmpty(_userForm.Email))
+            {
+                return;
+            }
+            try
+            {
+                var req = new RegisterRequest()
+                    {
+                        Email = _userForm.Email,
+                        FullName = _userForm.FullName,
+                        Username = _userForm.Username,
+                        Password = _userForm.Password,
+                        ConfirmPassword = _userForm.ConfirmPassword,
+                    };
+                var response = await _httpClient.PostAsJsonAsync("/Authentication/register", req);
+                _messageStore!.Clear(fieldEmailIdentifier);
+                _header = "Thanks for signing up!";
+                _isSuccessfullySaved = true;
+            }
+            catch
+            {
+                _isSuccessfullySaved = false;
+            }
+        }
+    }
+
+    private async Task VerifyInput()
+    {
+        var fieldEmailIdentifier = _formContext!.Field("Email");
+        if (string.IsNullOrEmpty(_userForm.Email))
+            return;
+
+        UpdateCreateButtonState();
+        _formContext.NotifyValidationStateChanged();
+    }
+
+}
+
+<style>
+
+</style>
