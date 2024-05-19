@@ -7,7 +7,7 @@ using System.Net;
 namespace PickingListsSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
         protected readonly IAuthService _authService;

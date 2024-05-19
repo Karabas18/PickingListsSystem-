@@ -1,20 +1,64 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Authorization
+@using PickingListsSystem.Front.Pages.Account
+@inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject ILocalStorageService _localStorage;
+
 <MudThemeProvider />
 
 <MudLayout>
-    <div class="page">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
-
-        <main>
-            <div class="top-row px-4">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+    @if (isAuthenticated)
+    {
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu />
             </div>
 
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
+            <main>
+                <div class="top-row px-4">
+                    <p> @userEmail</p>
+                    <NavLink href="/" @onclick="LogOut">Выйти</NavLink>
+                </div>
+
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
+        </div>
+    }
+    else
+    {
+        @Body
+    }
 </MudLayout>
+
+
+@code {
+    private bool isAuthenticated;
+    private string? userEmail;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity != null && authState.User.Identity.IsAuthenticated;
+        if (!isAuthenticated)
+        {
+            Navigation.NavigateTo("/register");
+        }
+        else
+        {
+            userEmail = await _localStorage.GetItemAsStringAsync("email");
+        }
+    }
+
+    private async Task LogOut()
+    {
+        await _localStorage.RemoveItemAsync("email");
+        await _localStorage.RemoveItemAsync("token");
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+
+}

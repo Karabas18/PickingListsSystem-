@@ -1,0 +1,151 @@
+﻿@page "/"
+@page "/Login"
+
+@using Blazored.LocalStorage
+@using MaerskBroker.Insights.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms;
+@using PickingListsSystem.Dto.User
+@using PickingListsSystem.Front.Components
+
+@inject HttpClient _httpClient;
+@inject ILocalStorageService _localStorage;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+
+@if (!isAuthenticated)
+{
+    <SignUpContainer EditContext="@_formContext" HeaderText="@_header" ShowLoginLink="@(!_isSuccessfullySaved)">
+        @if (!_isSuccessfullySaved)
+        {
+            <MudItem xs
+            ="12" Class
+            ="mt-7">
+                <MudText>Email</MudText>
+                <MudTextField OnlyValidateIfDirty="true"
+                Variant="Variant.Outlined"
+                @bind-Value="_userForm.Email"
+                For="@(() => _userForm.Email)"
+                Placeholder="What is your Email?" />
+            </MudItem>
+
+            <MudItem xs="12" Class="mt-1">
+                <MudText>Password</MudText>
+                <MudTextField OnlyValidateIfDirty="true"
+                InputType="InputType.Password"
+                OnBlur="VerifyInput"
+                Variant="Variant.Outlined"
+                @bind-Value="_userForm.Password"
+                For="@(() => _userForm.Password)"
+                Placeholder="What is your Password?" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@LoginAsync">Войти</MudButton>
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs
+            ="12">
+                <MudText Typo="Typo.body1">Please check your mail. <span class="blue-text">We have sent you a verification link.</span></MudText>
+            </MudItem>
+        }
+    </SignUpContainer>
+}
+
+@code {
+    private readonly LoginRequest _userForm = new();
+    private EditContext? _formContext;
+    private ValidationMessageStore? _messageStore;
+
+    private string _header = "Регистрация";
+
+    private bool _isAgreed;
+    private bool _isSuccessfullySaved;
+    private bool _isValidated;
+    private bool _isCreateButtonEnabled;
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _formContext = new EditContext(_userForm);
+        _messageStore = new ValidationMessageStore(_formContext);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity != null && authState.User.Identity.IsAuthenticated;
+    }
+
+
+    private void Toggle()
+    {
+        _isAgreed = !_isAgreed;
+        UpdateCreateButtonState();
+    }
+
+    private void UpdateCreateButtonState()
+    {
+        _isCreateButtonEnabled = _isAgreed && _isValidated;
+    }
+
+    private async Task LoginAsync()
+    {
+        var formIsValid = _formContext != null && _formContext.Validate();
+        if (formIsValid)
+        {
+            var fieldEmailIdentifier = _formContext!.Field("Email");
+            if (string.IsNullOrEmpty(_userForm.Email))
+            {
+                return;
+            }
+            try
+            {
+                var req = new LoginRequest()
+                    {
+                        Email = _userForm.Email,
+                        Password = _userForm.Password,
+                    };
+                var response = await _httpClient.PostAsJsonAsync("/Authentication/login", req);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                    await _localStorage.SetItemAsStringAsync("token", result.AccessToken);
+                    await _localStorage.SetItemAsStringAsync("email", result.Email);
+                    Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+                }
+
+                _messageStore!.Clear(fieldEmailIdentifier);
+                _isSuccessfullySaved = true;
+            }
+            catch
+            {
+                _isSuccessfullySaved = false;
+            }
+        }
+    }
+
+    private async Task VerifyInput()
+    {
+        var fieldEmailIdentifier = _formContext!.Field("Email");
+        if (string.IsNullOrEmpty(_userForm.Email))
+            return;
+
+        try
+        {
+            _messageStore!.Clear(fieldEmailIdentifier);
+            _isValidated = true;
+        }
+        catch
+        {
+            _isValidated = false;
+            _messageStore!.Add(fieldEmailIdentifier, "An account with this email does not match the selected company");
+        }
+        UpdateCreateButtonState();
+        _formContext.NotifyValidationStateChanged();
+    }
+
+}
+
+<style>
+
+</style>
