@@ -83,6 +83,13 @@
             <MudTd DataLabel="V">@foreach(var v in context.Materials){@v.MaterialV<br>}</MudTd>
             <MudTd DataLabel="Weight">@foreach(var w in context.Materials){@w.MaterialWeight<br>}</MudTd>
             <MudTd DataLabel="Type">@foreach(var t in context.Materials){@t.MaterialType<br>}</MudTd>
+            <MudTd DataLabel="Actions">
+                @*@if (context.StatementStatus == "Утвержден")*@ 
+                @if (context.StatementStatus == "Обрабатывается")
+                {
+                    <MudButton OnClick="@(() => DownloadStatement(@context.Id))" Variant="Variant.Filled" Color="Color.Primary">Скачать</MudButton>
+                }
+            </MudTd>
         </RowTemplate>
     </MudTable>
     <div style="margin-top: 20px;">
@@ -124,34 +131,6 @@
         StateHasChanged();
     }
 
-    //private async Task SaveToDatabase()
-    //{
-    //    var projectId = SelectedItemsService.ProjectId;
-    //    var workId = SelectedItemsService.WorkId;
-    //    //var statementId = await _statementService.AddStatement(new CreateStatementDto
-    //    //{
-    //    //            StatementStatus = "Проверяется",
-    //    //            StatementDate = DateTime.UtcNow,
-    //    //});
-
-    //    foreach (var material in selectedMaterial)
-    //    {
-
-    //    var materialIds = selectedMaterial.Select(m => m.Id).ToList();
-
-    //    //    await _statementService.AddMaterialsToStatement(statementId, materialIds);
-    //    }
-    //    await AddToStatement(projectId, workId, materialIds);
-    //    //StatementIDonly.Add(statementId);
-    //    ////var statement = await _statementService.GetStatementID(statementId);
-    //    ////selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
-    //    ////StatementIDonly.Add(statementId);
-    //    ////var statementMat = selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
-    //    //StateHasChanged();
-    //    //selectedMaterial.Clear();
-    //    //clickCounts.Clear();
-    //}
-
     private async Task SaveToDatabase()
     {
         var projectId = SelectedItemsService.ProjectId;
@@ -164,6 +143,11 @@
     {
         selectedStatementMaterials = await _statementService.GetStatement();
         StateHasChanged();
+    }
+
+    private void DownloadStatement(int statementId)
+    {
+        // Логика скачивания ведомости
     }
     
 }

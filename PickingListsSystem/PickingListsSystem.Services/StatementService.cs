@@ -57,7 +57,12 @@ namespace PickingListsSystem.Services
 
         public async Task AddToStatement(int projectId, int? workId, List<int> materialIds)
         {
-            var statement = new Statement();
+            //var statement = new Statement();
+            var statement = new Statement
+            {
+                StatementStatus = "Обрабатывается",
+                StatementDate = DateTime.Now
+            };
 
             var project = await _projectRepository.GetProjectID(projectId);//
             if (project == null)

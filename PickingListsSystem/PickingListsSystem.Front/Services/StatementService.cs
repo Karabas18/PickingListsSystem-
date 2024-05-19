@@ -15,33 +15,6 @@ namespace PickingListsSystem.Front.Services
         {
             _httpClient = httpClient;
         }
-
-        //public class AddMaterialsRequest
-        //{
-        //    public int StatementId { get; set; }
-        //    public List<int> MaterialIds { get; set; }
-        //}
-
-        //public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)
-        //{
-        //    AddMaterialsRequest request = new AddMaterialsRequest() { StatementId = statementId, MaterialIds = materialIds };
-        //    var response = await _httpClient.PostAsJsonAsync($"/Statement/addMaterials", request);
-        //    response.EnsureSuccessStatusCode();
-        //}
-        ////
-        //public class AddWorkRequest
-        //{
-        //    public int StatementId { get; set; }
-        //    public List<int> WorkIds { get; set; }
-        //}
-
-        //public async Task AddWorkToStatement(int statementId, List<int> workIds)
-        //{
-        //    AddWorkRequest request = new AddWorkRequest() { StatementId = statementId, WorkIds = workIds };
-        //    var response = await _httpClient.PostAsJsonAsync($"/Statement/addWork", request);
-        //    response.EnsureSuccessStatusCode();
-        //}
-        //
         public async Task<int> AddStatement(CreateStatementDto statement)
         {
             var response = await _httpClient.PostAsJsonAsync("/Statement", statement);
@@ -50,8 +23,6 @@ namespace PickingListsSystem.Front.Services
             // Возвращаем Id добавленной ведомости
             return await response.Content.ReadFromJsonAsync<int>();
         }
-
-        //
 
         public class AddToStatementRequest
         {
@@ -71,7 +42,8 @@ namespace PickingListsSystem.Front.Services
 
         public async Task DeleteStatement(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"/Statement?id={id}");
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<List<StatementDto>> GetStatement()
@@ -96,7 +68,11 @@ namespace PickingListsSystem.Front.Services
 
         public async Task<int> UpdateStatement(StatementDto statement)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync("/Statement", statement);
+            response.EnsureSuccessStatusCode();
+
+            // Возвращаем Id обновленной ведомости
+            return await response.Content.ReadFromJsonAsync<int>();
         }
     }
 }
