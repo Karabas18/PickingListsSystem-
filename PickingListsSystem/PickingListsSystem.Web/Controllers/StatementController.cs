@@ -53,7 +53,6 @@ namespace PickingListsSystem.Web.Controllers
 
         public class AddToStatementRequest
         {
-            public int StatementId { get; set; }
             public int ProjectId { get; set; }
             public int? WorkId { get; set; }
             public List<int> MaterialIds { get; set; }
@@ -64,7 +63,7 @@ namespace PickingListsSystem.Web.Controllers
         {
             try
             {
-                await _statementService.AddToStatement(request.StatementId, request.ProjectId, request.WorkId, request.MaterialIds);
+                await _statementService.AddToStatement(request.ProjectId, request.WorkId, request.MaterialIds);
                 return Ok("Statement updated successfully.");
             }
             catch (ArgumentException ex)

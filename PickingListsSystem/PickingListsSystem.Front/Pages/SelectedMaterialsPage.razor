@@ -1,12 +1,14 @@
 ﻿@page "/SelectedMaterialsPage"
 @using PickingListsSystem.Dto.Materials
 @using PickingListsSystem.Dto.Statement
+@using PickingListsSystem.Front.Services
 @using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts;
 @inject IMaterialService _selectedMaterialsService
 @inject IStatementService _statementService;
 @inject MarkMaterialService _selectedMaterialsService;
-
+@inject SelectedItemsService SelectedItemsService
+@inject StatementService _statementService
 
 <PageTitle>Selected Materials</PageTitle>
 
@@ -45,18 +47,18 @@
     <FooterContent>
         <MudTr>
             <MudTd Colspan="10">
-                <MudButton OnClick="@SaveToDatabase" Variant="Variant.Filled" Color="Color.Primary">Save to Database</MudButton>
+                <MudButton OnClick="@(() => SaveToDatabase())" Variant="Variant.Filled" Color="Color.Primary">Save to Database</MudButton>
             </MudTd>
         </MudTr>
     </FooterContent>
 </MudTable>
 
-@*@if (selectedStatementMaterials != null)
+@if (selectedStatementMaterials != null)
 {
     <h4>Содержимое ведомостей</h4>
-    <MudTable Items="@selectedStatementMaterials" Hover="true" Breakpoint="Breakpoint.Sm">*@
+    <MudTable Items="@selectedStatementMaterials" Hover="true" Breakpoint="Breakpoint.Sm">
     @*<MudTable Items="@selectedStatementMaterials.Where(x => StatementIDonly.Contains(x.Id))" Hover="true" Breakpoint="Breakpoint.Sm">*@
-       @* <HeaderContent>
+        <HeaderContent>
             <MudTh>Status</MudTh>
             <MudTh>Date</MudTh>
             <MudTh>Name</MudTh>
@@ -86,12 +88,12 @@
     <div style="margin-top: 20px;">
         <MudButton OnClick="@LoadSelectedStatementMaterials" Variant="Variant.Filled" Color="Color.Primary">Обновить таблицу</MudButton>
     </div>
-}*@
+}
 
 @code {
     private List<MaterialDto> selectedMaterial;
 
-    //private List<StatementDto> selectedStatementMaterials;
+    private List<StatementDto> selectedStatementMaterials;
     private List<int> StatementIDonly = new List<int>();
 
     private int selectedMaterialId;
@@ -104,7 +106,7 @@
         selectedMaterial = selectedMaterials.ToList();
         clickCounts = counts;
 
-        //selectedStatementMaterials = await _statementService.GetStatement();
+        selectedStatementMaterials = await _statementService.GetStatement();
     }
 
     private void SetSelectedMaterialId(int id)
@@ -122,35 +124,46 @@
         StateHasChanged();
     }
 
+    //private async Task SaveToDatabase()
+    //{
+    //    var projectId = SelectedItemsService.ProjectId;
+    //    var workId = SelectedItemsService.WorkId;
+    //    //var statementId = await _statementService.AddStatement(new CreateStatementDto
+    //    //{
+    //    //            StatementStatus = "Проверяется",
+    //    //            StatementDate = DateTime.UtcNow,
+    //    //});
+
+    //    foreach (var material in selectedMaterial)
+    //    {
+
+    //    var materialIds = selectedMaterial.Select(m => m.Id).ToList();
+
+    //    //    await _statementService.AddMaterialsToStatement(statementId, materialIds);
+    //    }
+    //    await AddToStatement(projectId, workId, materialIds);
+    //    //StatementIDonly.Add(statementId);
+    //    ////var statement = await _statementService.GetStatementID(statementId);
+    //    ////selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
+    //    ////StatementIDonly.Add(statementId);
+    //    ////var statementMat = selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
+    //    //StateHasChanged();
+    //    //selectedMaterial.Clear();
+    //    //clickCounts.Clear();
+    //}
+
     private async Task SaveToDatabase()
     {
-        //var statementId = await _statementService.AddStatement(new CreateStatementDto
-        //{
-        //            StatementStatus = "Проверяется",
-        //            StatementDate = DateTime.UtcNow,
-        //});
-
-        //foreach (var material in selectedMaterial)
-        //{
-
-        //    var materialIds = selectedMaterial.Select(m => m.Id).ToList();
-
-        //    await _statementService.AddMaterialsToStatement(statementId, materialIds);
-        //}
-        //StatementIDonly.Add(statementId);
-        ////var statement = await _statementService.GetStatementID(statementId);
-        ////selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
-        ////StatementIDonly.Add(statementId);
-        ////var statementMat = selectedStatementMaterials.Where(x => x.Id == statementId).FirstOrDefault();
-        //StateHasChanged();
-        //selectedMaterial.Clear();
-        //clickCounts.Clear();
+        var projectId = SelectedItemsService.ProjectId;
+        var workId = SelectedItemsService.WorkId;
+        var materialIds = selectedMaterial.Select(m => m.Id).ToList();
+        await _statementService.AddToStatement(projectId, workId, materialIds);
     }
 
     private async Task LoadSelectedStatementMaterials()
     {
-        //selectedStatementMaterials = await _statementService.GetStatement();
-        //StateHasChanged();
+        selectedStatementMaterials = await _statementService.GetStatement();
+        StateHasChanged();
     }
     
 }

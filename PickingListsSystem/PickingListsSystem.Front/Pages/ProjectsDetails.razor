@@ -1,9 +1,11 @@
 ﻿@page "/ProjectDetails/{id:int}"
 @using PickingListsSystem.Dto.Project
 @using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts
 @inject IProjectService _projectService
 @inject NavigationManager Navigation
+@inject SelectedItemsService SelectedItemsService
 @code {
     [Parameter] public int id { get; set; }
     private ProjectDto project;
@@ -21,6 +23,7 @@
 
     private void OnWorkSelectClick(WorkDto work)
     {
+        SelectedItemsService.SetWorkId(work.Id);
         Navigation.NavigateTo($"/WorkDetails/{work.Id}");
     }
 

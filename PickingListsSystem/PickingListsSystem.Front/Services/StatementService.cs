@@ -53,9 +53,18 @@ namespace PickingListsSystem.Front.Services
 
         //
 
-        public Task AddToStatement(int statementId, int projectId, int? workId, List<int> materialIds)
+        public class AddToStatementRequest
         {
-            throw new NotImplementedException();
+            public int ProjectId { get; set; }
+            public int? WorkId { get; set; }
+            public List<int> MaterialIds { get; set; }
+        }
+
+        public async Task AddToStatement(int projectId, int? workId, List<int> materialIds)
+        {
+                AddToStatementRequest request = new AddToStatementRequest() { ProjectId = projectId, WorkId = workId, MaterialIds = materialIds };
+            var response = await _httpClient.PostAsJsonAsync("/Statement/add", request);
+            response.EnsureSuccessStatusCode();
         }
 
         //

@@ -55,76 +55,77 @@ namespace PickingListsSystem.Services
             return entitytoUpdate.Id;
         }
 
-
-
-        public async Task AddToStatement(int statementId, int projectId, int? workId, List<int> materialIds)
+        public async Task AddToStatement(int projectId, int? workId, List<int> materialIds)
         {
-            //нахуй создавать раньше объект типа statement
-            // Получение ведомости из репозитория
-            var statement = await _statementRepository.GetStatementID(statementId);
-            if (statement == null)
+            var statement = new Statement();
+
+            var project = await _projectRepository.GetProjectID(projectId);//
+            if (project == null)
             {
-                throw new ArgumentException("Statement not found.");
+                throw new ArgumentException("Project not found.");
             }
+            if (!project.Work.Any(x=>x.Id==workId)) 
+                throw new ArgumentException("Project not found.");
 
-            // Проверка и добавление проекта в ведомость
-            if (projectId != 0)
-            {
-                var project = await _projectRepository.GetProjectIDSt(projectId);//
-                if (project == null)
-                {
-                    throw new ArgumentException("Project not found.");
-                }
+            var materials = await _materialRepository.GetMaterials(materialIds);
 
-                if (!statement.Project.Any(p => p.Id == projectId))
-                {
-                    statement.Project.Add(project);
-                }
-            }
+            statement.Project = project;
+            
+            statement.Work = project.Work.First(x => x.Id == workId);
 
-            // Если workId указан, проверяем и добавляем работу в проект
-            if (workId.HasValue && workId.Value != 0)
-            {
-                var work = await _workRepository.GetWorkIDSt(workId.Value);//
-                if (work == null)
-                {
-                    throw new ArgumentException("Work not found.");
-                }
+            statement.Materials = materials;
 
-                var project = statement.Project.FirstOrDefault(p => p.Id == projectId);
-                if (project == null)
-                {
-                    throw new ArgumentException("Project not found in statement.");
-                }
+            await _statementRepository.AddStatement(statement);
 
-                if (!project.Work.Any(w => w.Id == workId.Value))
-                {
-                    project.Work.Add(work);
-                }
-            }
+            //    if (!statement.Project.Any(p => p.Id == projectId))
+            //    {
+            //        statement.Project.Add(project);
+            //    }
+            //}
 
-            // Если указаны materialIds, добавляем материалы в работу
-            if (materialIds != null && materialIds.Any())
-            {
-                var work = statement.Project
-                                    .SelectMany(p => p.Work)
-                                    .FirstOrDefault(w => w.Id == workId.Value);
-                if (work == null)
-                {
-                    throw new ArgumentException("Work not found in project.");
-                }
+            //// Если workId указан, проверяем и добавляем работу в проект
+            //if (workId.HasValue && workId.Value != 0)
+            //{
+            //    var work = await _workRepository.GetWorkIDSt(workId.Value);//
+            //    if (work == null)
+            //    {
+            //        throw new ArgumentException("Work not found.");
+            //    }
 
-                foreach (var materialId in materialIds)
-                {
-                    var material = await _materialRepository.GetMaterialID(materialId);//
-                    if (material != null)
-                    {
-                        work.Materials.Add(material);
-                    }
-                }
-            }
+            //    var project = statement.Project.FirstOrDefault(p => p.Id == projectId);
+            //    if (project == null)
+            //    {
+            //        throw new ArgumentException("Project not found in statement.");
+            //    }
 
-            await _statementRepository.UpdateStatement(statement);
+            //    if (!project.Work.Any(w => w.Id == workId.Value))
+            //    {
+            //        project.Work.Add(work);
+            //    }
+            //}
+
+            //// Если указаны materialIds, добавляем материалы в работу
+            //if (materialIds != null && materialIds.Any())
+            //{
+            //    var work = statement.Project
+            //                        .SelectMany(p => p.Work)
+            //                        .FirstOrDefault(w => w.Id == workId.Value);
+            //    if (work == null)
+            //    {
+            //        throw new ArgumentException("Work not found in project.");
+            //    }
+
+            //    foreach (var materialId in materialIds)
+            //    {
+            //        var material = await _materialRepository.GetMaterialID(materialId);//
+            //        if (material != null)
+            //        {
+            //            work.Materials.Add(material);
+            //        }
+            //    }
+            //}
+
+            //await _statementRepository.UpdateStatement(statement);
         }
 
         //public async Task AddToStatement(int statementId, int projectId, int? workId, List<int> materialIds)
@@ -216,11 +217,6 @@ namespace PickingListsSystem.Services
 
         //    await _statementRepository.UpdateStatement(statement);
         //}
-
-
-
-
-
 
         //
         //public async Task AddMaterialsToStatement(int statementId, List<int> materialIds)

@@ -1,4 +1,7 @@
-﻿using PickingListsSystem.Dto.Project;
+﻿using PickingListsSystem.Dto.Materials;
+using PickingListsSystem.Dto.Project;
+using PickingListsSystem.Dto.Work;
+
 namespace PickingListsSystem.Dto.Statement
 
 {
@@ -6,8 +9,12 @@ namespace PickingListsSystem.Dto.Statement
     {
         public int Id { get; set; }
         //
-        //public ICollection<MaterialDto> Materials { get; set; } = new List<MaterialDto>();
+        public ICollection<MaterialDto> Materials { get; set; } = new List<MaterialDto>();
 
-        public ICollection<ProjectDto> Project { get; set; } = new List<ProjectDto>();
+        public ProjectDto Project { get; set; }
+
+        public WorkDto Work { get; set; }
+
+
     }
 }

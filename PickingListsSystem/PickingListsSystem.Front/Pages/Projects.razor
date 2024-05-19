@@ -1,8 +1,10 @@
 ﻿@page "/Projects"
+@using PickingListsSystem.Services
 @using PickingListsSystem.Dto.Project
 @using PickingListsSystem.Services.Contracts
 @inject IProjectService _projectService
 @inject NavigationManager Navigation
+@inject SelectedItemsService SelectedItemsService 
 
 <PageTitle>Проекты</PageTitle>
 
@@ -49,6 +51,7 @@
 
     private void OnEvaluateClick(ProjectDto project)
     {
+        SelectedItemsService.SetProjectId(project.Id);
         Navigation.NavigateTo($"/ProjectDetails/{project.Id}");
     }
 

@@ -17,11 +17,19 @@ namespace PickingListsSystem.DataAccess.Repositories
             return result;
         }
 
+        public async Task<List<Material>> GetMaterials(List<int> materialIds)
+        {
+            var result = await _dbContext.Materials.Where(x=>materialIds.Contains(x.Id)).ToListAsync();
+            return result;
+        }
+
         public async Task<Material> GetMaterialID(int id)
         {
             var result = await _dbContext.Materials.FirstOrDefaultAsync(material => material.Id == id);
             return result;
         }
+
+
         
 
         public async Task DeleteMaterial(int id)

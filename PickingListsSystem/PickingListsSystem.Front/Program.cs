@@ -28,5 +28,7 @@ builder.Services.AddSingleton<MarkMaterialService>();
 builder.Services.AddSingleton<MarkWorkService>();
 builder.Services.AddScoped<StatementService>();
 
+builder.Services.AddScoped<SelectedItemsService>();
+
 await builder.Build().RunAsync();
 

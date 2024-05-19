@@ -13,6 +13,6 @@ namespace PickingListsSystem.Services.Contracts
         //Task AddMaterialsToStatement(int statementId, List<int> materialIds);
         ////
         //Task AddWorkToStatement(int statementId, List<int> workIds);
-        Task AddToStatement(int statementId, int projectId, int? workId, List<int> materialIds);
+        Task AddToStatement(int projectId, int? workId, List<int> materialIds);
     }
 }
