@@ -150,6 +150,7 @@
         if (string.IsNullOrEmpty(_userForm.Email))
             return;
 
+        _isValidated = true;
         UpdateCreateButtonState();
         _formContext.NotifyValidationStateChanged();
     }
