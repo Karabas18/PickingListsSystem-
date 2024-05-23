@@ -47,7 +47,7 @@
     <FooterContent>
         <MudTr>
             <MudTd Colspan="10">
-                <MudButton OnClick="@(() => SaveToDatabase())" Variant="Variant.Filled" Color="Color.Primary">Save to Database</MudButton>
+                <MudButton OnClick="@(() => SaveToDatabase())" Variant="Variant.Filled" Color="Color.Primary">Отправить оператору</MudButton>
             </MudTd>
         </MudTr>
     </FooterContent>
@@ -84,8 +84,8 @@
             <MudTd DataLabel="Weight">@foreach(var w in context.Materials){@w.MaterialWeight<br>}</MudTd>
             <MudTd DataLabel="Type">@foreach(var t in context.Materials){@t.MaterialType<br>}</MudTd>
             <MudTd DataLabel="Actions">
-                @*@if (context.StatementStatus == "Утвержден")*@ 
-                @if (context.StatementStatus == "Обрабатывается")
+                @*@if (context.StatementStatus == "Утвержден, Обрабатывается")*@ 
+                @if (context.StatementStatus == "Утвержден")
                 {
                     <MudButton OnClick="@(() => DownloadStatement(@context.Id))" Variant="Variant.Filled" Color="Color.Primary">Скачать</MudButton>
                 }

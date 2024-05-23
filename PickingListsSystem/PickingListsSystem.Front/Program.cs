@@ -9,6 +9,7 @@ using PickingListsSystem.Front.Services;
 using PickingListsSystem.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using BlazorFileSaver;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,6 +19,8 @@ builder.Services.AddScoped(sp => new HttpClient
 { BaseAddress = new Uri("https://localhost:7153/") });
 
 builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddBlazorFileSaver();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

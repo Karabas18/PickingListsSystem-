@@ -1,12 +1,18 @@
 ﻿@page "/Counter"
 @using PickingListsSystem.Dto.Materials
 @using PickingListsSystem.Services.Contracts;
-@inject IMaterialService _materialService;
-<PageTitle>Index</PageTitle>
+@inject IMaterialService _materialService
+@inject NavigationManager Navigation
+<PageTitle>Materials</PageTitle>
+
+<MudTextField @bind-Value="@selectedMaterialId" Label="Material ID" />
+
+<MudButton OnClick="@FindMaterialById" Variant="Variant.Filled" Color="Color.Primary">Найти</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowAllMaterials">Показать все материалы</MudButton>
 
 <MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
     <HeaderContent>
-        <MudTh>NameZ</MudTh>
+        <MudTh>Name</MudTh>
         <MudTh>Unit</MudTh>
         <MudTh>Mark</MudTh>
         <MudTh>Gost</MudTh>
@@ -16,6 +22,8 @@
         <MudTh>V</MudTh>
         <MudTh>Weight</MudTh>
         <MudTh>Type</MudTh>
+        <MudTh>Actions</MudTh>
+        <MudTh>Actions</MudTh> 
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.MaterialName</MudTd>
@@ -23,25 +31,82 @@
         <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
         <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
         <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
-        <MudTd DataLabel="Rl">@context.MaterialRL</MudTd>
+        <MudTd DataLabel="RL">@context.MaterialRL</MudTd>
         <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
         <MudTd DataLabel="V">@context.MaterialV</MudTd>
         <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
         <MudTd DataLabel="Type">@context.MaterialType</MudTd>
-        <MudTd DataLabel="Actions"><MudButton OnClick="OnEvaluateCLick" Variant="Variant.Filled" Color="Color.Primary">Evaluate</MudButton></MudTd>
+        <MudTd DataLabel="Actions">
+            <MudButton OnClick="@(() => OnEvaluateClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Actions"> 
+            <MudButton OnClick="@(() => OnEditClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Изменить</MudButton>
+        </MudTd>
     </RowTemplate>
 </MudTable>
 
+<MudForm @ref="form" Model="@newMaterial" @onsubmit="HandleValidSubmit">
+    <MudTextField @bind-Value="newMaterial.MaterialName" Label="Name" Required="true" />
+    <MudTextField @bind-Value="newMaterial.MaterialUnit" Label="Unit" Required="true" />
+    <MudTextField @bind-Value="newMaterial.MaterialMark" Label="Mark" />
+    <MudTextField @bind-Value="newMaterial.MaterialGost" Label="Gost" />
+    <MudTextField @bind-Value="newMaterial.MaterialRB" Label="RB" />
+    <MudTextField @bind-Value="newMaterial.MaterialRL" Label="RL" />
+    <MudTextField @bind-Value="newMaterial.MaterialRH" Label="RH" />
+    <MudTextField @bind-Value="newMaterial.MaterialV" Label="V" />
+    <MudTextField @bind-Value="newMaterial.MaterialWeight" Label="Weight" />
+    <MudTextField @bind-Value="newMaterial.MaterialType" Label="Type" />
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Добавить материал</MudButton>
+</MudForm>
+
 @code {
     private List<MaterialDto>? materials;
+    private CreateMaterialDto newMaterial = new CreateMaterialDto();
+    private MudForm form;
+    private int selectedMaterialId;
+    private List<MaterialDto> previousMaterials;
 
     protected async override Task OnInitializedAsync()
     {
         materials = await _materialService.GetMaterials();
     }
 
-    private void OnEvaluateCLick()
+    private async Task HandleValidSubmit()
     {
+        await _materialService.AddMaterial(newMaterial);
+        materials = await _materialService.GetMaterials(); // обновляем список после добавления
+        newMaterial = new CreateMaterialDto(); // сброс формы
+        StateHasChanged(); // обновляем интерфейс
+    }
 
+    private async Task OnEvaluateClick(int id)
+    {
+        await _materialService.DeleteMaterial(id); // удаляем материал
+        materials = await _materialService.GetMaterials(); // обновляем список после удаления
+        StateHasChanged(); // обновляем интерфейс
+    }
+
+    private async Task OnEditClick(int id)
+    {
+        // Пока оставим метод пустым
+    }
+
+    private async Task FindMaterialById()
+    {
+        previousMaterials = materials; // Сохраняем предыдущий список
+        var material = await _materialService.GetMaterialID(selectedMaterialId);
+        if (material != null)
+        {
+        materials = new List<MaterialDto> { material }; // Обновляем список, включая только найденный материал
+        }
+        else
+        {
+        materials = previousMaterials; // Восстанавливаем предыдущий список, если поиск не удался
+        // Действия при неудачном поиске, например, вывод сообщения об ошибке
+        }
+    }
+    private async Task ShowAllMaterials()
+    {
+    materials = await _materialService.GetMaterials(); // Получаем все материалы
     }
 }

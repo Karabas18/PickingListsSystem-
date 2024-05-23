@@ -70,8 +70,6 @@ namespace PickingListsSystem.Front.Services
         {
             var response = await _httpClient.PutAsJsonAsync("/Statement", statement);
             response.EnsureSuccessStatusCode();
-
-            // Возвращаем Id обновленной ведомости
             return await response.Content.ReadFromJsonAsync<int>();
         }
     }

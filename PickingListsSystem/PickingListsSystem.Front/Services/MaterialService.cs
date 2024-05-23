@@ -13,15 +13,31 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
-        public Task<int> AddMaterial(CreateMaterialDto material)
+        //public Task<int> AddMaterial(CreateMaterialDto material)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public async Task<int> AddMaterial(CreateMaterialDto material)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PostAsJsonAsync("/Material", material);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
-        public Task DeleteMaterial(int id)
+
+        //public Task DeleteMaterial(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public async Task DeleteMaterial(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"/Material?id={id}");
+            response.EnsureSuccessStatusCode();
         }
+
 
         public async Task<List<MaterialDto>> GetMaterials()
         {

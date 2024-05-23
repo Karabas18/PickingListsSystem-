@@ -30,8 +30,6 @@ namespace PickingListsSystem.DataAccess.Repositories
         }
 
 
-        
-
         public async Task DeleteMaterial(int id)
         {
             var result = await _dbContext.Materials.FindAsync(id);
