@@ -5,7 +5,6 @@ using MudBlazor.Services;
 using PickingListsSystem.Services.Contracts;
 using PickingListsSystem.Front.Services;
 
-//
 using PickingListsSystem.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
@@ -31,10 +30,9 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IWorkService, WorkService>();
 builder.Services.AddScoped<IStatementService, StatementService>();
-//
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
-//Проверить!!!
 builder.Services.AddSingleton<MarkMaterialService>();
 builder.Services.AddSingleton<MarkWorkService>();
 builder.Services.AddScoped<StatementService>();

@@ -3,80 +3,110 @@
 @using PickingListsSystem.Services.Contracts;
 @inject IMaterialService _materialService
 @inject NavigationManager Navigation
-<PageTitle>Materials</PageTitle>
+<PageTitle>Материалы</PageTitle>
 
-<MudTextField @bind-Value="@selectedMaterialId" Label="Material ID" />
+<MudTextField @bind-Value="@selectedMaterialId" Label="ID материала" />
 
 <MudButton OnClick="@FindMaterialById" Variant="Variant.Filled" Color="Color.Primary">Найти</MudButton>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowAllMaterials">Показать все материалы</MudButton>
 
 <MudTable Items="@materials" Hover="true" Breakpoint="Breakpoint.Sm">
     <HeaderContent>
-        <MudTh>Name</MudTh>
-        <MudTh>Unit</MudTh>
-        <MudTh>Mark</MudTh>
-        <MudTh>Gost</MudTh>
+        <MudTh>Наименование</MudTh>
+        <MudTh>Единица</MudTh>
+        <MudTh>Марка</MudTh>
+        <MudTh>ГОСТ</MudTh>
         <MudTh>RB</MudTh>
         <MudTh>RL</MudTh>
         <MudTh>RH</MudTh>
         <MudTh>V</MudTh>
-        <MudTh>Weight</MudTh>
-        <MudTh>Type</MudTh>
-        <MudTh>Actions</MudTh>
-        <MudTh>Actions</MudTh> 
+        <MudTh>Вес</MudTh>
+        <MudTh>Тип</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Действия</MudTh>
+        <MudTh>Действия</MudTh> 
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">@context.MaterialName</MudTd>
-        <MudTd DataLabel="Unit">@context.MaterialUnit</MudTd>
-        <MudTd DataLabel="Mark">@context.MaterialMark</MudTd>
-        <MudTd DataLabel="Gost">@context.MaterialGost</MudTd>
+        <MudTd DataLabel="Наименование">@context.MaterialName</MudTd>
+        <MudTd DataLabel="Единица">@context.MaterialUnit</MudTd>
+        <MudTd DataLabel="Марка">@context.MaterialMark</MudTd>
+        <MudTd DataLabel="ГОСТ">@context.MaterialGost</MudTd>
         <MudTd DataLabel="RB">@context.MaterialRB</MudTd>
         <MudTd DataLabel="RL">@context.MaterialRL</MudTd>
         <MudTd DataLabel="RH">@context.MaterialRH</MudTd>
         <MudTd DataLabel="V">@context.MaterialV</MudTd>
-        <MudTd DataLabel="Weight">@context.MaterialWeight</MudTd>
-        <MudTd DataLabel="Type">@context.MaterialType</MudTd>
-        <MudTd DataLabel="Actions">
+        <MudTd DataLabel="Вес">@context.MaterialWeight</MudTd>
+        <MudTd DataLabel="Тип">@context.MaterialType</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Действия">
             <MudButton OnClick="@(() => OnEvaluateClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
         </MudTd>
-        <MudTd DataLabel="Actions"> 
+        <MudTd DataLabel="Действия"> 
             <MudButton OnClick="@(() => OnEditClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Изменить</MudButton>
         </MudTd>
     </RowTemplate>
 </MudTable>
 
 <MudForm @ref="form" Model="@newMaterial" @onsubmit="HandleValidSubmit">
-    <MudTextField @bind-Value="newMaterial.MaterialName" Label="Name" Required="true" />
-    <MudTextField @bind-Value="newMaterial.MaterialUnit" Label="Unit" Required="true" />
-    <MudTextField @bind-Value="newMaterial.MaterialMark" Label="Mark" />
-    <MudTextField @bind-Value="newMaterial.MaterialGost" Label="Gost" />
+    <MudTextField @bind-Value="newMaterial.MaterialName" Label="Наименование" Required="true" />
+    <MudTextField @bind-Value="newMaterial.MaterialUnit" Label="Единица" Required="true" />
+    <MudTextField @bind-Value="newMaterial.MaterialMark" Label="Марка" />
+    <MudTextField @bind-Value="newMaterial.MaterialGost" Label="ГОСТ" />
     <MudTextField @bind-Value="newMaterial.MaterialRB" Label="RB" />
     <MudTextField @bind-Value="newMaterial.MaterialRL" Label="RL" />
     <MudTextField @bind-Value="newMaterial.MaterialRH" Label="RH" />
     <MudTextField @bind-Value="newMaterial.MaterialV" Label="V" />
-    <MudTextField @bind-Value="newMaterial.MaterialWeight" Label="Weight" />
-    <MudTextField @bind-Value="newMaterial.MaterialType" Label="Type" />
-    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Добавить материал</MudButton>
+    <MudTextField @bind-Value="newMaterial.MaterialWeight" Label="Вес" />
+    <MudTextField @bind-Value="newMaterial.MaterialType" Label="Тип" />
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@(!isEdit ? "Добавить материал" : "Изменить материал")</MudButton>
 </MudForm>
 
 @code {
     private List<MaterialDto>? materials;
-    private CreateMaterialDto newMaterial = new CreateMaterialDto();
+    private MaterialDto newMaterial = new MaterialDto(); // Изменено с CreateMaterialDto на MaterialDto
     private MudForm form;
     private int selectedMaterialId;
     private List<MaterialDto> previousMaterials;
+    private bool isEdit = false;
 
     protected async override Task OnInitializedAsync()
     {
-        materials = await _materialService.GetMaterials();
+        // materials = await _materialService.GetMaterials();
     }
 
     private async Task HandleValidSubmit()
     {
-        await _materialService.AddMaterial(newMaterial);
-        materials = await _materialService.GetMaterials(); // обновляем список после добавления
-        newMaterial = new CreateMaterialDto(); // сброс формы
+        if (isEdit)
+        {
+            await _materialService.UpdateMaterial(newMaterial);
+            isEdit = false; // Режим редактирования выключен
+        }
+        else
+        {
+            await _materialService.AddMaterial(new CreateMaterialDto
+            {
+                MaterialName = newMaterial.MaterialName,
+                MaterialUnit = newMaterial.MaterialUnit,
+                MaterialMark = newMaterial.MaterialMark,
+                MaterialGost = newMaterial.MaterialGost,
+                MaterialRB = newMaterial.MaterialRB,
+                MaterialRL = newMaterial.MaterialRL,
+                MaterialRH = newMaterial.MaterialRH,
+                MaterialV = newMaterial.MaterialV,
+                MaterialWeight = newMaterial.MaterialWeight,
+                MaterialType = newMaterial.MaterialType
+            });
+        }
+
+        materials = await _materialService.GetMaterials(); // обновляем список после добавления или изменения
+        ResetForm(); // Сброс формы
         StateHasChanged(); // обновляем интерфейс
+    }
+
+    private void ResetForm()
+    {
+        newMaterial = new MaterialDto(); // сброс формы
+        isEdit = false; // переключаемся в режим добавления
     }
 
     private async Task OnEvaluateClick(int id)
@@ -88,7 +118,12 @@
 
     private async Task OnEditClick(int id)
     {
-        // Пока оставим метод пустым
+        var material = await _materialService.GetMaterialID(id);
+        if (material != null)
+        {
+            newMaterial = material;
+            isEdit = true; // переключаемся в режим редактирования
+        }
     }
 
     private async Task FindMaterialById()
@@ -97,16 +132,17 @@
         var material = await _materialService.GetMaterialID(selectedMaterialId);
         if (material != null)
         {
-        materials = new List<MaterialDto> { material }; // Обновляем список, включая только найденный материал
+            materials = new List<MaterialDto> { material }; // Обновляем список, включая только найденный материал
         }
         else
         {
-        materials = previousMaterials; // Восстанавливаем предыдущий список, если поиск не удался
-        // Действия при неудачном поиске, например, вывод сообщения об ошибке
+            materials = previousMaterials; // Восстанавливаем предыдущий список, если поиск не удался
+            // Действия при неудачном поиске, например, вывод сообщения об ошибке
         }
     }
+    
     private async Task ShowAllMaterials()
     {
-    materials = await _materialService.GetMaterials(); // Получаем все материалы
+        materials = await _materialService.GetMaterials(); // Получаем все материалы
     }
 }

@@ -7,11 +7,11 @@
         public string? StatementStatus { get; set; }
 
         public DateTime? StatementDate { get; set; }
-        public Project Project { get; set; } //Один-ко-многим
+        public Project Project { get; set; } 
 
         public int ProjectId { get; set; }
 
-        public List<Material> Materials { get; set; } = new(); //Один-ко-многим
+        public List<Material> Materials { get; set; } = new(); 
 
         public Work Work { get; set; }
 

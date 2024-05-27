@@ -15,7 +15,7 @@
 
         public ICollection<Material> Materials { get; set; } = new List<Material>();
 
-        public ICollection<Project> Project { get; set; } = new List<Project>();//try3//один-ко-многим
+        public ICollection<Project> Project { get; set; } = new List<Project>();
 
     }
 }

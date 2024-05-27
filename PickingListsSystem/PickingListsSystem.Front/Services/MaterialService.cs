@@ -13,10 +13,6 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
-        //public Task<int> AddMaterial(CreateMaterialDto material)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public async Task<int> AddMaterial(CreateMaterialDto material)
         {
@@ -25,12 +21,6 @@ namespace PickingListsSystem.Front.Services
 
             return await response.Content.ReadFromJsonAsync<int>();
         }
-
-
-        //public Task DeleteMaterial(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public async Task DeleteMaterial(int id)
         {
@@ -59,9 +49,13 @@ namespace PickingListsSystem.Front.Services
             }
         }
 
-        public Task<int> UpdateMaterial(MaterialDto material)
+        public async Task<int> UpdateMaterial(MaterialDto material)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync("/Material", material);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
+
     }
 }

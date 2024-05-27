@@ -16,7 +16,7 @@
 
         public ICollection<WorkGroup> WorkGroup { get; set; } = new List<WorkGroup>();
 
-        public ICollection<Work> Work { get; set; } = new List<Work>();//try3
+        public ICollection<Work> Work { get; set; } = new List<Work>();
 
         public ICollection<Statement> Statement { get; set; } = new List<Statement>();
     }

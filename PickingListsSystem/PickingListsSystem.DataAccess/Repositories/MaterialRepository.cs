@@ -1,4 +1,4 @@
-﻿// методы для работы с баззой данных 
+﻿
 using Microsoft.EntityFrameworkCore;
 using PickingListsSystem.DataAccess.Contracts;
 using PickingListsSystem.Entities;

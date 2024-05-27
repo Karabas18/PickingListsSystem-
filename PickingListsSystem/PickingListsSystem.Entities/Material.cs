@@ -25,11 +25,5 @@
         public int? MaterialType { get; set; }
 
         public ICollection<Work> Work { get; set; } = new List<Work>();
-
-        //public Statement Statement { get; set; } // добавлена связь
-
-        //public int? StatementId { get; set; } // добавлена связь
-
-        //public ICollection<Statement> Statement { get; set; } = new List<Statement>();
     }
 }

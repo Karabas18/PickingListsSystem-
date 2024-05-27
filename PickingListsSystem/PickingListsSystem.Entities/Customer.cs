@@ -12,7 +12,7 @@
 
         public string? CustomerEmail { get; set; }
 
-        public ICollection<Project> Project { get; set; } = new List<Project>();//правильно?
+        public ICollection<Project> Project { get; set; } = new List<Project>();
 
     }
 }

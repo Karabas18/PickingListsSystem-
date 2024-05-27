@@ -32,13 +32,5 @@ public class PlsDbContext : IdentityDbContext
 
     public virtual DbSet<Statement> Statement { get; set; }
 
-    //protected override void OnModelCreating(ModelBuilder modelBuilder)
-    //{
-    //    modelBuilder.Entity<Material>()
-    //        .HasOne(m => m.Statement)
-    //        .WithMany(s => s.Materials)
-    //        .HasForeignKey(m => m.StatementId)
-    //        .OnDelete(DeleteBehavior.SetNull);
-    //}
 
 }
