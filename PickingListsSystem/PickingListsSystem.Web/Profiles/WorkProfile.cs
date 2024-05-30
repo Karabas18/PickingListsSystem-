@@ -10,7 +10,7 @@ namespace PickingListsSystem.API.Profiles
         {
             //CreateMap<Work, WorkDto>().ReverseMap();
             CreateMap<Work, WorkDto>()
-            .ForMember(dest => dest.Materials, opt => opt.MapFrom(src => src.Materials));
+            .ForMember(dest => dest.Materials, opt => opt.MapFrom(src => src.Materials)).ReverseMap();
 
             CreateMap<CreateWorkDto, Work>().ReverseMap();
         }

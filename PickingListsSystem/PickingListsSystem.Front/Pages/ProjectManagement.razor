@@ -1,2 +1,152 @@
 ﻿@page "/ProjectManagement"
+@using PickingListsSystem.Dto.Project
+@using PickingListsSystem.Services.Contracts
+@inject IProjectService _projectService
+@inject NavigationManager Navigation
+<PageTitle>Управление Проектами</PageTitle>
 
+<MudTextField @bind-Value="@selectedProjectId" Label="ID проекта" />
+
+<MudButton OnClick="@FindProjectById" Variant="Variant.Filled" Color="Color.Primary">Найти</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowAllProjects">Показать все проекты</MudButton>
+
+<MudTable Items="@projects" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Объект Проекта</MudTh>
+        <MudTh>План Проекта</MudTh>
+        <MudTh>Статус Проекта</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Действия</MudTh>
+        <MudTh>Действия</MudTh>
+        <MudTh>Действия</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Объект Проекта">@context.ProjectObject</MudTd>
+        <MudTd DataLabel="План Проекта">@context.ProjectPlan</MudTd>
+        <MudTd DataLabel="Статус Проекта">@context.ProjectStatus</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnDeleteClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnEditClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Изменить</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnAddWorkClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Добавить работу</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@if (showWorkInput)
+{
+    <MudTextField @bind-Value="workIdsInput" Label="Работы (через запятую)" />
+    <MudButton OnClick="@SubmitWorks" Variant="Variant.Filled" Color="Color.Primary">Добавить работы</MudButton>
+}
+
+<MudForm @ref="form" Model="@newProject" @onsubmit="HandleValidSubmit">
+    <MudTextField @bind-Value="newProject.ProjectObject" Label="Объект Проекта" Required="true" />
+    <MudTextField @bind-Value="newProject.ProjectPlan" Label="План Проекта" Required="true" />
+    <MudTextField @bind-Value="newProject.ProjectStatus" Label="Статус Проекта" />
+    <MudTextField @bind-Value="newProject.CustomerId" Label="Заказчик" />
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@(!isEdit ? "Добавить проект" : "Изменить проект")</MudButton>
+</MudForm>
+
+@code {
+    private List<ProjectDto>? projects;
+    private ProjectDto newProject = new ProjectDto();
+    private MudForm form;
+    private int selectedProjectId;
+    private List<ProjectDto> previousProjects;
+    private bool isEdit = false;
+    private int? editProjectId = null;
+    private bool showWorkInput = false;
+    private string workIdsInput;
+    private int currentProjectIdForWorks;
+
+    protected async override Task OnInitializedAsync()
+    {
+        projects = await _projectService.GetProject();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isEdit && editProjectId.HasValue)
+        {
+            newProject.Id = editProjectId.Value;
+            await _projectService.UpdateProject(newProject);
+            isEdit = false;
+        }
+        else
+        {
+            await _projectService.AddProject(new CreateProjectDto
+            {
+                ProjectObject = newProject.ProjectObject,
+                ProjectPlan = newProject.ProjectPlan,
+                ProjectStatus = newProject.ProjectStatus,
+                CustomerId = newProject.CustomerId // Не забудьте добавить другие обязательные поля
+            });
+        }
+
+        projects = await _projectService.GetProject();
+        ResetForm();
+        StateHasChanged();
+    }
+
+    private void ResetForm()
+    {
+        newProject = new ProjectDto();
+        isEdit = false;
+        editProjectId = null;
+    }
+
+    private async Task OnDeleteClick(int id)
+    {
+        await _projectService.DeleteProject(id);
+        projects = await _projectService.GetProject();
+        StateHasChanged();
+    }
+
+    private async Task OnEditClick(int id)
+    {
+        var project = await _projectService.GetProjectID(id);
+        if (project != null)
+        {
+            newProject = project;
+            isEdit = true;
+            editProjectId = id;
+        }
+    }
+
+    private async Task FindProjectById()
+    {
+        previousProjects = projects;
+        var project = await _projectService.GetProjectID(selectedProjectId);
+        if (project != null)
+        {
+            projects = new List<ProjectDto> { project };
+        }
+        else
+        {
+            projects = previousProjects;
+        }
+    }
+
+    private async Task ShowAllProjects()
+    {
+        projects = await _projectService.GetProject();
+    }
+
+    private void OnAddWorkClick(int id)
+    {
+        currentProjectIdForWorks = id;
+        showWorkInput = true;
+    }
+
+    private async Task SubmitWorks()
+    {
+        var workIds = workIdsInput.Split(',').Select(int.Parse).ToList();
+        await _projectService.AddWorkToProject(currentProjectIdForWorks, workIds);
+        showWorkInput = false;
+        workIdsInput = string.Empty;
+    }
+}

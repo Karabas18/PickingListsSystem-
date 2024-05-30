@@ -13,14 +13,18 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
-        public Task<int> AddProject(CreateProjectDto project)
+        public async Task<int> AddProject(CreateProjectDto project)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PostAsJsonAsync("/Project", project);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
-        public Task DeleteProject(int id)
+        public async Task DeleteProject(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"/Project?id={id}");
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<List<ProjectDto>> GetProject()
@@ -43,14 +47,30 @@ namespace PickingListsSystem.Front.Services
             }
         }
 
-        public Task<int> UpdateProject(ProjectDto project)
+        public async Task<int> UpdateProject(ProjectDto project)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync("/Project", project);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
-        public Task AddWorkToProject(int projectId, List<int> workIds)
+        public class AddProjectWorkRequest
         {
-            throw new NotImplementedException();
+            public int ProjectId { get; set; }
+            public List<int> WorkIds { get; set; }
+        }
+
+        public async Task AddWorkToProject(int projectId, List<int> workIds)
+        {
+            var request = new AddProjectWorkRequest
+            {
+                ProjectId = projectId,
+                WorkIds = workIds
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("/Project/addWork", request);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

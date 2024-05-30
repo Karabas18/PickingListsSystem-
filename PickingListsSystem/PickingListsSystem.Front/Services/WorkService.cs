@@ -13,14 +13,18 @@ namespace PickingListsSystem.Front.Services
             _httpClient = httpClient;
         }
 
-        public Task<int> AddWork(CreateWorkDto work)
+        public async Task<int> AddWork(CreateWorkDto work)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PostAsJsonAsync("/Work", work);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
-        public Task DeleteWork(int id)
+        public async Task DeleteWork(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"/Work?id={id}");
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<List<WorkDto>> GetWork()
@@ -43,9 +47,12 @@ namespace PickingListsSystem.Front.Services
             }
         }
 
-        public Task<int> UpdateWork(WorkDto work)
+        public async Task<int> UpdateWork(WorkDto work)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync("/Work", work);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<int>();
         }
 
         public class AddWorkRequest1
@@ -57,7 +64,7 @@ namespace PickingListsSystem.Front.Services
         public async Task AddMaterialsToWork(int workId, List<int> materialIds)
         {
             AddWorkRequest1 request = new AddWorkRequest1() { WorkId = workId, MaterialIds = materialIds };
-            var response = await _httpClient.PostAsJsonAsync($"/Work/addMaterials", request);
+            var response = await _httpClient.PostAsJsonAsync($"/Work/addWorkMaterials", request);
             response.EnsureSuccessStatusCode();
         }
     }

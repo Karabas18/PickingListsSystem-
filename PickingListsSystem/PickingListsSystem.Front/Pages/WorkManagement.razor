@@ -1,1 +1,158 @@
 ﻿@page "/WorkManagement"
+@using PickingListsSystem.Dto.Work
+@using PickingListsSystem.Services.Contracts;
+@inject IWorkService _workService
+@inject NavigationManager Navigation
+<PageTitle>Управление Работами</PageTitle>
+
+<MudTextField @bind-Value="@selectedWorkId" Label="ID работы" />
+
+<MudButton OnClick="@FindWorkById" Variant="Variant.Filled" Color="Color.Primary">Найти</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ShowAllWorks">Показать все работы</MudButton>
+
+<MudTable Items="@works" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Код Работы</MudTh>
+        <MudTh>Описание</MudTh>
+        <MudTh>Единица Измерения</MudTh>
+        <MudTh>Тип Работы</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Действия</MudTh>
+        <MudTh>Действия</MudTh>
+        <MudTh>Действия</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Код Работы">@context.WorkCode</MudTd>
+        <MudTd DataLabel="Описание">@context.WorkDescription</MudTd>
+        <MudTd DataLabel="Единица Измерения">@context.WorkUnitMeasurement</MudTd>
+        <MudTd DataLabel="Тип Работы">@context.WorkTypeId</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnDeleteClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnEditClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Изменить</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Действия">
+            <MudButton OnClick="@(() => OnAddMaterialClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Добавить материал</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@if (showMaterialInput)
+{
+    <MudTextField @bind-Value="materialIdsInput" Label="Материалы (через запятую)" />
+    <MudButton OnClick="@SubmitMaterials" Variant="Variant.Filled" Color="Color.Primary">Добавить материалы</MudButton>
+}
+
+<MudForm @ref="form" Model="@newWork" @onsubmit="HandleValidSubmit">
+    <MudTextField @bind-Value="newWork.WorkCode" Label="Код Работы" Required="true" />
+    <MudTextField @bind-Value="newWork.WorkDescription" Label="Описание" Required="true" />
+    <MudTextField @bind-Value="newWork.WorkUnitMeasurement" Label="Единица Измерения" />
+    <MudTextField @bind-Value="newWork.WorkTypeId" Label="Тип Работы" />
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">@(!isEdit ? "Добавить работу" : "Изменить работу")</MudButton>
+</MudForm>
+
+@code {
+    private List<WorkDto>? works;
+    private WorkDto newWork = new WorkDto(); // Изменено с CreateWorkDto на WorkDto
+    private MudForm form;
+    private int selectedWorkId;
+    private List<WorkDto> previousWorks;
+    private bool isEdit = false;
+    private int? editWorkId = null; // ID работы, которая редактируется
+    private bool showMaterialInput = false;
+    private string materialIdsInput;
+    private int currentWorkIdForMaterials;
+
+    protected async override Task OnInitializedAsync()
+    {
+        works = await _workService.GetWork();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isEdit && editWorkId.HasValue)
+        {
+            newWork.Id = editWorkId.Value; // Устанавливаем ID работы, чтобы обновить существующую запись
+            await _workService.UpdateWork(newWork);
+            isEdit = false; // Режим редактирования выключен
+        }
+        else
+        {
+            await _workService.AddWork(new CreateWorkDto
+            {
+                WorkCode = newWork.WorkCode,
+                WorkDescription = newWork.WorkDescription,
+                WorkUnitMeasurement = newWork.WorkUnitMeasurement,
+                WorkTypeId = newWork.WorkTypeId
+            });
+        }
+
+        works = await _workService.GetWork(); // Обновляем список после добавления или изменения
+        ResetForm(); // Сброс формы
+        StateHasChanged(); // Обновляем интерфейс
+    }
+
+    private void ResetForm()
+    {
+        newWork = new WorkDto(); // Сброс формы
+        isEdit = false; // Переключаемся в режим добавления
+        editWorkId = null; // Сбрасываем ID редактируемой работы
+    }
+
+    private async Task OnDeleteClick(int id)
+    {
+        await _workService.DeleteWork(id); // Удаляем работу
+        works = await _workService.GetWork(); // Обновляем список после удаления
+        StateHasChanged(); // Обновляем интерфейс
+    }
+
+    private async Task OnEditClick(int id)
+    {
+        var work = await _workService.GetWorkID(id);
+        if (work != null)
+        {
+            newWork = work;
+            isEdit = true; // Переключаемся в режим редактирования
+            editWorkId = id; // Сохраняем ID редактируемой работы
+        }
+    }
+
+    private async Task FindWorkById()
+    {
+        previousWorks = works; // Сохраняем предыдущий список
+        var work = await _workService.GetWorkID(selectedWorkId);
+        if (work != null)
+        {
+            works = new List<WorkDto> { work }; // Обновляем список, включая только найденную работу
+        }
+        else
+        {
+            works = previousWorks; // Восстанавливаем предыдущий список, если поиск не удался
+            // Действия при неудачном поиске, например, вывод сообщения об ошибке
+        }
+    }
+
+    private async Task ShowAllWorks()
+    {
+        works = await _workService.GetWork(); // Получаем все работы
+    }
+
+    private void OnAddMaterialClick(int id)
+    {
+        currentWorkIdForMaterials = id;
+        showMaterialInput = true;
+    }
+
+    private async Task SubmitMaterials()
+    {
+        if (int.TryParse(materialIdsInput, out int materialId))
+        {
+            var materialIds = materialIdsInput.Split(',').Select(int.Parse).ToList();
+            await _workService.AddMaterialsToWork(currentWorkIdForMaterials, materialIds);
+            showMaterialInput = false;
+            materialIdsInput = string.Empty;
+        }
+    }
+}
