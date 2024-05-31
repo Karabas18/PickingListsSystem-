@@ -4,11 +4,19 @@
 @using PickingListsSystem.Front.Services
 @using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts;
+
+@using iText.Kernel.Pdf
+@using iText.Layout
+@using iText.Layout.Element
+
 @inject IMaterialService _selectedMaterialsService
 @inject IStatementService _statementService;
 @inject MarkMaterialService _selectedMaterialsService;
 @inject SelectedItemsService SelectedItemsService
 @inject StatementService _statementService
+
+@inject IJSRuntime JSRuntime
+
 
 <PageTitle>Selected Materials</PageTitle>
 
@@ -145,9 +153,52 @@
         StateHasChanged();
     }
 
-    private void DownloadStatement(int statementId)
+    private async Task DownloadStatement(int statementId)
     {
-        // Логика скачивания ведомости
+        var statement = selectedStatementMaterials.FirstOrDefault(s => s.Id == statementId);
+        if (statement != null)
+        {
+            var pdfBytes = await GeneratePDF(statement);
+            await JSRuntime.InvokeVoidAsync("downloadFile", $"Statement_{statementId}.pdf", Convert.ToBase64String(pdfBytes));
+        }
     }
-    
+
+    private Task<byte[]> GeneratePDF(StatementDto statement)
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+
+            try
+            {
+                var writer = new PdfWriter(memoryStream);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf);
+
+                // Add content to PDF
+                document.Add(new Paragraph($"Statement ID: {statement.Id}"));
+                document.Add(new Paragraph($"Status: {statement.StatementStatus}"));
+                document.Add(new Paragraph($"Date: {statement.StatementDate}"));
+
+                // Add materials to PDF
+                foreach (var material in statement.Materials)
+                {
+                    document.Add(new Paragraph($"Name: {material.MaterialName}\n Unit: {material.MaterialUnit}\n Gost: {material.MaterialGost}\n Weight:{material.MaterialWeight}\n"));
+                }
+
+                document.Close();
+                return Task.FromResult(memoryStream.ToArray());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+    }
+    //
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.InvokeVoidAsync("Mess");
+        base.OnAfterRender(firstRender);
+    }
+
 }

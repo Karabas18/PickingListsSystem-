@@ -11,6 +11,7 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="PickingListsSystem.Front.styles.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -23,6 +24,39 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+    Mess = function () {
+            console.log('Script loaded_not_file');
+        }
+    </script>
+    <script>
+        window.downloadFile = function (filename, bytesBase64) {
+            var binaryString = atob(bytesBase64);
+            var length = binaryString.length;
+            var bytes = new Uint8Array(length);
+            for (var i = 0; i < length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            var blob = new Blob([bytes], { type: 'application/pdf' });
+
+            // Создаем ссылку для скачивания
+            var url = URL.createObjectURL(blob);
+
+            // Создаем ссылку для скачивания файла
+            var link = document.createElement('a');
+            link.href = url;
+            // Используем encodeURIComponent для обработки русских символов в имени файла
+            link.download = encodeURIComponent(filename);
+            document.body.appendChild(link);
+
+            // Симулируем клик по ссылке для скачивания файла
+            link.click();
+
+            // Освобождаем ресурсы
+            URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+        }
+    </script>
 </body>
 
 </html>
