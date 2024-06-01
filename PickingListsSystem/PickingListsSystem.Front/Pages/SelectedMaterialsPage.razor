@@ -8,6 +8,8 @@
 @using iText.Kernel.Pdf
 @using iText.Layout
 @using iText.Layout.Element
+@using iText.Kernel.Font;
+@using iText.IO.Font;
 
 @inject IMaterialService _selectedMaterialsService
 @inject IStatementService _statementService;
@@ -164,36 +166,47 @@
     }
 
     private Task<byte[]> GeneratePDF(StatementDto statement)
+{
+    using (var memoryStream = new MemoryStream())
     {
-        using (var memoryStream = new MemoryStream())
+        try
         {
+            var writer = new PdfWriter(memoryStream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+           
+            string fontPath = Path.Combine(Directory.GetCurrentDirectory(), "fonts", "TIMES.TTF");
+           
+            PdfFont font = PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H);
+            document.Add(new Paragraph($"Statement ID: {statement.Id}")
+                .SetFont(font)
+                .SetFontSize(12));
+                
+            document.Add(new Paragraph($"Status: {statement.StatementStatus}")
+                .SetFont(font)
+                .SetFontSize(12));
+                
+            document.Add(new Paragraph($"Date: {statement.StatementDate}")
+                .SetFont(font)
+                .SetFontSize(12));
 
-            try
+            foreach (var material in statement.Materials)
             {
-                var writer = new PdfWriter(memoryStream);
-                var pdf = new PdfDocument(writer);
-                var document = new Document(pdf);
-
-                // Add content to PDF
-                document.Add(new Paragraph($"Statement ID: {statement.Id}"));
-                document.Add(new Paragraph($"Status: {statement.StatementStatus}"));
-                document.Add(new Paragraph($"Date: {statement.StatementDate}"));
-
-                // Add materials to PDF
-                foreach (var material in statement.Materials)
-                {
-                    document.Add(new Paragraph($"Name: {material.MaterialName}\n Unit: {material.MaterialUnit}\n Gost: {material.MaterialGost}\n Weight:{material.MaterialWeight}\n"));
-                }
-
-                document.Close();
-                return Task.FromResult(memoryStream.ToArray());
+                document.Add(new Paragraph($"Name: {material.MaterialName}\n Unit: {material.MaterialUnit}\n Gost: {material.MaterialGost}\n Weight: {material.MaterialWeight}\n")
+                    .SetFont(font)
+                    .SetFontSize(12));
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            document.Close();
+            return Task.FromResult(memoryStream.ToArray());
+        }
+        catch (Exception ex)
+        
+        {
+            throw;
         }
     }
+}
     //
     protected override void OnAfterRender(bool firstRender)
     {
