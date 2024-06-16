@@ -1,9 +1,39 @@
 ﻿@page "/WorkManagement"
 @using PickingListsSystem.Dto.Work
 @using PickingListsSystem.Services.Contracts;
+@using PickingListsSystem.Dto.WorkType
 @inject IWorkService _workService
+@inject IWorkTypeService _workTypeService
 @inject NavigationManager Navigation
+
+
 <PageTitle>Управление Работами</PageTitle>
+
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnWorkTypesClick">Типы работ</MudButton>
+</div>
+
+@if (showWorkTypes)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Тип работы</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var workType in workTypes)
+            {
+                <tr>
+                    <td>@workType.TypeOfWork</td>
+                    <td>@workType.WorkTypeTranscript</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <MudTextField @bind-Value="@selectedWorkId" Label="ID работы" />
 
@@ -17,6 +47,7 @@
         <MudTh>Единица Измерения</MudTh>
         <MudTh>Тип Работы</MudTh>
         <MudTh>Id</MudTh>
+        <MudTh>Связанные материалы</MudTh>
         <MudTh>Действия</MudTh>
         <MudTh>Действия</MudTh>
         <MudTh>Действия</MudTh>
@@ -27,6 +58,7 @@
         <MudTd DataLabel="Единица Измерения">@context.WorkUnitMeasurement</MudTd>
         <MudTd DataLabel="Тип Работы">@context.WorkTypeId</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Связанные материалы">@string.Join(",", context.Materials.Select(m => m.Id))</MudTd>
         <MudTd DataLabel="Действия">
             <MudButton OnClick="@(() => OnDeleteClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
         </MudTd>
@@ -41,8 +73,8 @@
 
 @if (showMaterialInput)
 {
-    <MudTextField @bind-Value="materialIdsInput" Label="Материалы (через запятую)" />
-    <MudButton OnClick="@SubmitMaterials" Variant="Variant.Filled" Color="Color.Primary">Добавить материалы</MudButton>
+    <MudTextField @bind-Value="materialIdsInput" Label="Материал (Id)" />
+    <MudButton OnClick="@SubmitMaterials" Variant="Variant.Filled" Color="Color.Primary">Добавить материал</MudButton>
 }
 
 <MudForm @ref="form" Model="@newWork" @onsubmit="HandleValidSubmit">
@@ -64,6 +96,9 @@
     private bool showMaterialInput = false;
     private string materialIdsInput;
     private int currentWorkIdForMaterials;
+
+    private bool showWorkTypes = false; // Флаг для отображения модального окна
+    private List<WorkTypeDto> workTypes = new List<WorkTypeDto>(); // Список типов работ
 
     protected async override Task OnInitializedAsync()
     {
@@ -155,4 +190,18 @@
             materialIdsInput = string.Empty;
         }
     }
+
+      private async Task OnWorkTypesClick()
+      {
+            if (showWorkTypes)
+            {
+                showWorkTypes = false;
+            }
+            else
+            {
+                workTypes = await _workTypeService.GetWorkType();
+                showWorkTypes = true;
+            }
+            StateHasChanged(); 
+      }
 }

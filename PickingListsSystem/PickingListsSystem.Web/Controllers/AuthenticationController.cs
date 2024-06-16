@@ -55,5 +55,21 @@ namespace PickingListsSystem.Web.Controllers
 
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
+
+        [HttpPost]
+        [Route("changeRole")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ChangeUserRoleToAdmin([FromQuery] string userId)
+        {
+            try
+            {
+                var result = await _authService.ChangeUserRoleToAdmin(userId);
+                return result ? Ok(new { Message = "User role changed to admin successfully" }) : BadRequest(new { Message = "Failed to change user role to admin" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

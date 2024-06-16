@@ -39,5 +39,9 @@ builder.Services.AddScoped<StatementService>();
 
 builder.Services.AddScoped<SelectedItemsService>();
 
+builder.Services.AddScoped<IWorkTypeService, WorkTypeService>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 await builder.Build().RunAsync();
 

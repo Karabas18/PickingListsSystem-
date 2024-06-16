@@ -8,5 +8,7 @@ namespace PickingListsSystem.Services.Contracts
         Task<RegisterResponse> Register(RegisterRequest request);
         Task<UserDto?> GetProfile(string userId);
         Task<LoginResponse> Refresh(RefreshTokenRequest dto);
+
+        Task<bool> ChangeUserRoleToAdmin(string userId);
     }
 }

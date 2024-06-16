@@ -67,5 +67,11 @@ namespace PickingListsSystem.Front.Services
             var response = await _httpClient.PostAsJsonAsync($"/Work/addWorkMaterials", request);
             response.EnsureSuccessStatusCode();
         }
+
+        //public async Task<List<WorkTypeDto>> GetWorkTypes()
+        //{
+        //    var response = await _httpClient.GetFromJsonAsync<List<WorkTypeDto>>("api/WorkType");
+        //    return response ?? new List<WorkTypeDto>();
+        //}
     }
 }

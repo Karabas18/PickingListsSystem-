@@ -1,4 +1,5 @@
 ﻿using PickingListsSystem.Dto.Work;
+using PickingListsSystem.Dto.WorkType;
 
 namespace PickingListsSystem.Services.Contracts
 {
@@ -11,5 +12,6 @@ namespace PickingListsSystem.Services.Contracts
         Task<int> UpdateWork(WorkDto work);
         //
         Task AddMaterialsToWork(int workId, List<int> materialIds);
+        //
     }
 }

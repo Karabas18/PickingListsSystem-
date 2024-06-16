@@ -1,9 +1,42 @@
 ﻿@page "/ProjectManagement"
 @using PickingListsSystem.Dto.Project
 @using PickingListsSystem.Services.Contracts
+@using PickingListsSystem.Dto.Customer
 @inject IProjectService _projectService
+@inject ICustomerService _customerService
 @inject NavigationManager Navigation
+
+
 <PageTitle>Управление Проектами</PageTitle>
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnCustomerClick">Работодатели</MudButton>
+</div>
+
+@if (showCustomers)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Доверенное лицо</th>
+                <th>Контактный телефон</th>
+                <th>Рабочий email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in customers)
+            {
+                <tr>
+                    <td>@customer.CustomerName</td>
+                    <td>@customer.CustomerContactPercon</td>
+                    <td>@customer.CustomerPhone</td>
+                    <td>@customer.CustomerEmail</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <MudTextField @bind-Value="@selectedProjectId" Label="ID проекта" />
 
@@ -16,6 +49,7 @@
         <MudTh>План Проекта</MudTh>
         <MudTh>Статус Проекта</MudTh>
         <MudTh>Id</MudTh>
+        <MudTh>Связанные работы</MudTh>
         <MudTh>Действия</MudTh>
         <MudTh>Действия</MudTh>
         <MudTh>Действия</MudTh>
@@ -25,6 +59,7 @@
         <MudTd DataLabel="План Проекта">@context.ProjectPlan</MudTd>
         <MudTd DataLabel="Статус Проекта">@context.ProjectStatus</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Связанные работы">@string.Join(",", context.Work.Select(m => m.Id))</MudTd>
         <MudTd DataLabel="Действия">
             <MudButton OnClick="@(() => OnDeleteClick(context.Id))" Variant="Variant.Filled" Color="Color.Primary">Удалить</MudButton>
         </MudTd>
@@ -39,8 +74,8 @@
 
 @if (showWorkInput)
 {
-    <MudTextField @bind-Value="workIdsInput" Label="Работы (через запятую)" />
-    <MudButton OnClick="@SubmitWorks" Variant="Variant.Filled" Color="Color.Primary">Добавить работы</MudButton>
+    <MudTextField @bind-Value="workIdsInput" Label="Работа (Id)" />
+    <MudButton OnClick="@SubmitWorks" Variant="Variant.Filled" Color="Color.Primary">Добавить работу</MudButton>
 }
 
 <MudForm @ref="form" Model="@newProject" @onsubmit="HandleValidSubmit">
@@ -62,6 +97,9 @@
     private bool showWorkInput = false;
     private string workIdsInput;
     private int currentProjectIdForWorks;
+
+    private bool showCustomers = false; 
+    private List<CustomerDto> customers = new List<CustomerDto>();
 
     protected async override Task OnInitializedAsync()
     {
@@ -149,4 +187,18 @@
         showWorkInput = false;
         workIdsInput = string.Empty;
     }
+
+    private async Task OnCustomerClick()
+      {
+            if (showCustomers)
+            {
+                showCustomers = false;
+            }
+            else
+            {
+                customers = await _customerService.GetCustomer();
+                showCustomers = true;
+            }
+            StateHasChanged(); 
+      }
 }

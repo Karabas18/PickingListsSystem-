@@ -287,5 +287,58 @@ namespace PickingListsSystem.Services
             await _userRefreshTokenRepository.UpdateAsync(tokenToUpdate);
             return tokenToUpdate.RefreshToken;
         }
+
+        public async Task<bool> ChangeUserRoleToAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var currentRole = currentRoles.FirstOrDefault();
+
+            if (currentRole == null)
+            {
+                throw new Exception("User has no roles assigned");
+            }
+
+            IdentityResult removeRolesResult = null;
+            IdentityResult addRoleResult = null;
+
+            //if (currentRole == UserRoleEnum.admin.ToString().ToLower())
+                if (currentRole == "Admin")
+                {
+                removeRolesResult = await _userManager.RemoveFromRoleAsync(user, UserRoleEnum.admin.ToString());
+                if (!removeRolesResult.Succeeded)
+                {
+                    throw new Exception("Failed to remove user roles");
+                }
+
+                addRoleResult = await _userManager.AddToRoleAsync(user, UserRoleEnum.user.ToString());
+                if (!addRoleResult.Succeeded)
+                {
+                    throw new Exception("Failed to add new role to user");
+                }
+            }
+            //else if (currentRole == UserRoleEnum.user.ToString().ToLower())
+                else if (currentRole == "User")
+                    {
+                removeRolesResult = await _userManager.RemoveFromRoleAsync(user, UserRoleEnum.user.ToString());
+                if (!removeRolesResult.Succeeded)
+                {
+                    throw new Exception("Failed to remove user roles");
+                }
+
+                addRoleResult = await _userManager.AddToRoleAsync(user, UserRoleEnum.admin.ToString());
+                if (!addRoleResult.Succeeded)
+                {
+                    throw new Exception("Failed to add new role to user");
+                }
+            }
+
+            return true;
+        }
     }
 }

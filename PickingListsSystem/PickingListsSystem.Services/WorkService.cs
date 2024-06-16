@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PickingListsSystem.DataAccess.Contracts;
 using PickingListsSystem.Dto.Work;
+using PickingListsSystem.Dto.WorkType;
 using PickingListsSystem.Entities;
 using PickingListsSystem.Services.Contracts;
 

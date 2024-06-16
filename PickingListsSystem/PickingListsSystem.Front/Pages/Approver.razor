@@ -1,18 +1,35 @@
 ﻿@page "/Approver"
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
 @using PickingListsSystem.Dto.Project
 @using PickingListsSystem.Dto.Statement
 @using PickingListsSystem.Dto.Work
 @using PickingListsSystem.Services
 @using PickingListsSystem.Services.Contracts
+
+
+
 @inject IStatementService _statementService
 @inject NavigationManager Navigation
 @inject SelectedItemsService SelectedItemsService
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@attribute [Authorize(Roles = "Admin")]
+
 <PageTitle>Ведомости</PageTitle>
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+
 
 <div style="margin-bottom: 20px;">
     <MudButton OnClick="@RefreshStatements" Variant="Variant.Filled" Color="Color.Primary">Обновить</MudButton>
 </div>
+
 
 @if (isLoading)
 {
@@ -31,7 +48,10 @@ else
                         <p><strong>Дата:</strong> @statement.StatementDate?.ToString("dd-MM-yyyy")</p>
                     </div>
                     <div>
-                        <MudButton OnClick="() => ApproveStatement(statement)" Color="Color.Success" Variant="Variant.Filled" Class="mr-2">Одобрить</MudButton>
+                        @if (statement.StatementStatus == "Обрабатывается")
+                        {
+                            <MudButton OnClick="() => ApproveStatement(statement)" Color="Color.Success" Variant="Variant.Filled" Class="mr-2">Одобрить</MudButton>
+                        }
                         <MudButton OnClick="() => RejectStatement(statement)" Color="Color.Error" Variant="Variant.Filled">Отклонить</MudButton>
                     </div>
                 </div>
@@ -63,16 +83,22 @@ else
                 <MudTh>ГОСТ</MudTh>
                 <MudTh>Вес</MudTh>
             </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Марка материала">@context.MaterialMark</MudTd>
-                <MudTd DataLabel="Название">@context.MaterialName</MudTd>
-                <MudTd DataLabel="Единица измерения">@context.MaterialUnit</MudTd>
-                <MudTd DataLabel="ГОСТ">@context.MaterialGost</MudTd>
-                <MudTd DataLabel="Вес">@context.MaterialWeight</MudTd>
+            <RowTemplate Context="material">
+                <MudTd DataLabel="Марка материала">@material.MaterialMark</MudTd>
+                <MudTd DataLabel="Название">@material.MaterialName</MudTd>
+                <MudTd DataLabel="Единица измерения">@material.MaterialUnit</MudTd>
+                <MudTd DataLabel="ГОСТ">@material.MaterialGost</MudTd>
+                <MudTd DataLabel="Вес">@material.MaterialWeight</MudTd>
             </RowTemplate>
         </MudTable>
     }
 }
+
+</Authorized>
+    <NotAuthorized>
+        <p>У вас нет прав для просмотра этой страницы.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<StatementDto> statements;
@@ -81,7 +107,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         var allStatements = await _statementService.GetStatement();
-        statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
+        //statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
+        statements = allStatements;
         isLoading = false;
     }
 
@@ -108,6 +135,8 @@ else
     {
         // Обновляем список ведомостей после удаления
         var allStatements = await _statementService.GetStatement();
-        statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
+        //statements = allStatements.Where(s => s.StatementStatus == "Обрабатывается").ToList();
+        statements = allStatements;
     }
+
 }

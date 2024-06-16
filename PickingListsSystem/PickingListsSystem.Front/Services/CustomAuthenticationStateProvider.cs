@@ -17,6 +17,10 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         var identity = string.IsNullOrEmpty(token) ? new ClaimsIdentity() : new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
 
         var user = new ClaimsPrincipal(identity);
+
+        Console.WriteLine("User authenticated: " + user.Identity.IsAuthenticated);
+        Console.WriteLine("User roles: " + string.Join(", ", user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+
         return new AuthenticationState(user);
     }
 
